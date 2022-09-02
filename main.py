@@ -38,7 +38,6 @@ if __name__ == '__main__':
     SCREEN_HEIGHT = 800
 
 
-
     # Define the Player object extending pygame.sprite.Sprite
     # Instead of a surface, we use an image for a better looking sprite
     class Player(pygame.sprite.Sprite):
@@ -71,7 +70,6 @@ if __name__ == '__main__':
             elif self.rect.bottom >= SCREEN_HEIGHT:
                 self.rect.bottom = SCREEN_HEIGHT
 
-
     # Define the enemy object extending pygame.sprite.Sprite
     # Instead of a surface, we use an image for a better looking sprite
     class Enemy(pygame.sprite.Sprite):
@@ -86,11 +84,7 @@ if __name__ == '__main__':
                     random.randint(0, SCREEN_HEIGHT),
                 )
             )
-
-            self.minSpeed = 5
-            self.maxSpeed = 15
-            self.speed = random.randint(self.minSpeed, self.maxSpeed)
-
+            self.speed = random.randint(5, 15)
 
         # Move the enemy based on speed
         # Remove it when it passes the left edge of the screen
@@ -99,57 +93,90 @@ if __name__ == '__main__':
             if self.rect.right < 0:
                 self.kill()
 
-        def increaseDifficulty(self, increaseSpeedBy):
-            self.speed = random.randint(5+increaseSpeedBy, 15+increaseSpeedBy)
 
-
-    # Define the cloud object extending pygame.sprite.Sprite
-    # Use an image for a better looking sprite
-    class Cloud(pygame.sprite.Sprite):
+    class Game():
         def __init__(self):
-            super(Cloud, self).__init__()
-            self.surf = pygame.image.load(path + "bubble.png").convert()
-            self.surf.set_colorkey((0, 0, 0), RLEACCEL)
-            # The starting position is randomly generated
-            self.rect = self.surf.get_rect(
-                center=(
-                    random.randint(SCREEN_WIDTH + 20, SCREEN_WIDTH + 100),
-                    random.randint(0, SCREEN_HEIGHT),
-                )
-            )
-
-        # Move the cloud based on a constant speed
-        # Remove it when it passes the left edge of the screen
-        def update(self):
-            self.rect.move_ip(-5, 0)
-            if self.rect.right < 0:
-                self.kill()
+            self.SCREEN_WIDTH = 1000
+            self.SCREEN_HEIGHT = 800
 
 
-    # Define the bubble object extending pygame.sprite.Sprite
-    # Use an image for a better looking sprite
-    class BigBubble(pygame.sprite.Sprite):
-        def __init__(self):
-            super(BigBubble, self).__init__()
-            self.surf = pygame.image.load(path + "bigbubble.png").convert()
-            self.surf.set_colorkey((0, 0, 0), RLEACCEL)
-            # The starting position is randomly generated
-            self.rect = self.surf.get_rect(
-                center=(
-                    random.randint(SCREEN_WIDTH + 20, SCREEN_WIDTH + 100),
-                    random.randint(0, SCREEN_HEIGHT),
-                )
-            )
 
-        # Move the cloud based on a constant speed
-        # Remove it when it passes the left edge of the screen
-        def update(self):
-            self.rect.move_ip(-3, 0)
-            if self.rect.right < 0:
-                self.kill()
+        def run(self):
+            print('test')
 
 
-    def runStartScreen(event):
+    def runMainGame():
+        gamestate = 'mainloop'
+        global bgX_far, bgX2_far, bgX_middle, bgX2_middle, bgX_foreground, bgX2_foreground
+
+        # Make the background move
+        bgX_far, bgX2_far = move_background(1.4, background_far.get_width(), bgX_far, bgX2_far)
+        bgX_middle, bgX2_middle = move_background(1.8, background_middle.get_width(), bgX_middle, bgX2_middle)
+        bgX_foreground, bgX2_foreground = move_background(2, background_foreground.get_width(), bgX_foreground,
+                                                          bgX2_foreground)
+
+        screen.fill((0, 0, 0))  # black
+        screen.blit(background_far, [bgX_far, 0])
+        screen.blit(background_far, [bgX2_far, 0])
+        screen.blit(background_middle, [bgX_middle, 20])
+        screen.blit(background_middle, [bgX2_middle, 20])
+        screen.blit(background_foreground, [bgX_foreground, 40])
+        screen.blit(background_foreground, [bgX2_foreground, 40])
+
+        for event in pygame.event.get():
+            # Did the user hit a key?
+            # print("check1")
+
+            if event.type == KEYDOWN:
+                # Was it the Escape key? If so, stop the loop
+                if event.key == K_ESCAPE:
+                    print("quitting")
+                    gamestate = 'quitgame'
+
+                if event.type == pygame.QUIT:
+                    gamestate = 'quitgame'
+
+
+            # Should we add a new enemy?
+            elif event.type == ADDENEMY:
+                # Create the new enemy, and add it to our sprite groups
+                new_enemy = Enemy()
+                enemies.add(new_enemy)
+                all_sprites.add(new_enemy)
+
+        # print("check2")
+        # Get the set of keys pressed and check for user input
+        pressed_keys = pygame.key.get_pressed()
+        player.update(pressed_keys)
+
+        # Update the position of our enemies and clouds
+        enemies.update()
+
+        # Draw all our sprites
+        for entity in all_sprites:
+            screen.blit(entity.surf, entity.rect)
+
+        # print("check4")
+
+        # Check if any enemies have collided with the player
+        if pygame.sprite.spritecollideany(player, enemies):
+            # If so, remove the player
+            player.kill()
+            print("Player killed")
+
+            # Stop any moving sounds and play the collision sound
+            move_up_sound.stop()
+            move_down_sound.stop()
+            collision_sound.play()
+
+            # Stop the loop
+            gamestate = 'gameover'
+            print("Stopping main loop")
+
+        return gamestate
+
+
+    def runStartScreen():
         gamestate = 'startscreen'
         startscreen = StartScreen()
         fish = Fish()
@@ -158,14 +185,81 @@ if __name__ == '__main__':
         screen.blit(fish.surf, fish.location)
         screen.blit(fishadventure_text.surf, fishadventure_text.location)
 
-        if event.type == KEYDOWN:
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
 
-            # If space to start
-            if event.key == K_SPACE:
-                startscreen.kill()
-                gamestate = 'mainloop'
+                # If space to start
+                if event.key == K_SPACE:
+                    startscreen.kill()
+                    gamestate = 'mainloop'
+
+                if event.key == K_ESCAPE:
+                    print("quitting")
+                    gamestate = 'quitgame'
+
+                if event.type == pygame.QUIT:
+                    gamestate = 'quitgame'
 
         return gamestate
+
+
+    def runGameOver():
+        gamestate = 'gameover'
+        gameover = GameOver(path, SCREEN_WIDTH, SCREEN_HEIGHT)
+        replay = PressSpaceToReplay(path, SCREEN_WIDTH, SCREEN_HEIGHT)
+        screen.blit(gameover.surf, gameover.surf_center)
+        screen.blit(replay.surf, replay.surf_center)
+
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                if event.key == K_SPACE:
+                    gamestate = 'startscreen'
+
+                if event.key == K_ESCAPE:
+                    print("quitting")
+                    gamestate = 'quitgame'
+
+                if event.type == pygame.QUIT:
+                    gamestate = 'quitgame'
+
+        return gamestate
+
+
+    def move_background(speed, backgroundWidth, bgX, bgX2):
+        # Make the background move
+        bgX -= speed  # Move both background images back
+        bgX2 -= speed
+
+        if bgX < backgroundWidth * -1:  # If our bg is at the -width then reset its position
+            bgX = backgroundWidth
+
+        if bgX2 < backgroundWidth * -1:
+            bgX2 = backgroundWidth
+
+        return bgX, bgX2
+
+    def setupBackground(SCREEN_WIDTH,SCREEN_HEIGHT):
+        # Setup background
+        background_far = pygame.image.load(path + 'far.png')
+        background_far = pygame.transform.scale(background_far, (SCREEN_WIDTH, background_far.get_height() * 3))
+        bgX_far = 0
+        bgX2_far = background_far.get_width()
+
+        background_middle = pygame.image.load(path + 'sand.png')
+        background_middle = pygame.transform.scale(background_middle, (SCREEN_WIDTH, SCREEN_HEIGHT - 180))
+        bgX_middle = 0
+        bgX2_middle = background_middle.get_width()
+
+        background_foreground = pygame.image.load(path + 'foreground-merged.png')
+        background_foreground = pygame.transform.scale(background_foreground, (SCREEN_WIDTH + 500, SCREEN_HEIGHT - 160))
+        bgX_foreground = 0
+        bgX2_foreground = background_foreground.get_width()
+
+        # Initialize
+        pygame.mixer.init()  # Setup for sounds, defaults are good
+        pygame.init()  # Initialize pygame
+
+        return
 
     # Setup background
     background_far = pygame.image.load(path + 'far.png')
@@ -229,207 +323,30 @@ if __name__ == '__main__':
     move_down_sound.set_volume(0.2)
     collision_sound.set_volume(0.5)
 
-    # ====== START SCREEN LOOP =========
-    GameOverRunning = False
-    StartScreenRunning = True
+    # ========== GAME STATES ==============
+    gamestate = 'startscreen'
+    run = True
+    while run:
 
-    while StartScreenRunning:
-    
+        if gamestate == 'startscreen':
+            gamestate = runStartScreen()
 
-        # screen.fill((0, 0, 50))        # sea blue
+        elif gamestate == 'mainloop':
+            gamestate = runMainGame()
 
-        startscreen = StartScreen()
-        fish = Fish()
-        fishadventure_text = FishAdventure()
-        screen.blit(startscreen.surf, startscreen.surf_center)
-        screen.blit(fish.surf, fish.location)
-        screen.blit(fishadventure_text.surf, fishadventure_text.location)
+        elif gamestate == 'gameover':
+            gamestate = runGameOver()
 
-        for event in pygame.event.get():
-            # Did the user hit a key?
-            if event.type == KEYDOWN:
-                # Was it the Escape key? If so, stop the loop
-                if event.key == K_ESCAPE:
-                    pygame.quit()
+        elif gamestate == 'quitgame':
+            run = False
 
-                # If space to start
-                if event.key == K_SPACE:
-                    startscreen.kill()
-                    running = True
-                    StartScreenRunning = False
-
-            # Did the user click the window close button? If so, stop the loop
-            elif event.type == QUIT:
-                pygame.quit()
-
+        # Ensure we maintain a 30 frames per second rate
+        clock.tick(30)
         pygame.display.flip()
 
-
-    def move_background(speed, backgroundWidth, bgX, bgX2):
-        # Make the background move
-        bgX -= speed  # Move both background images back
-        bgX2 -= speed
-
-        if bgX < backgroundWidth * -1:  # If our bg is at the -width then reset its position
-            bgX = backgroundWidth
-
-        if bgX2 < backgroundWidth * -1:
-            bgX2 = backgroundWidth
-
-        return bgX, bgX2
-
-
-    # ====== MAINLOOP FUNCTION ================================================================================
-    def run_mainloop():
-        global bgX_far, bgX2_far, bgX_middle, bgX2_middle, bgX_foreground, bgX2_foreground
-        mainLoopIsRunning = True
-        gameOverRunning = False
-        difficultyCounter = 0;
-        maxSpeed = 15
-        minSpeed = 5
-        timer = 400
-        while mainLoopIsRunning:
-
-            # Make the background move
-            bgX_far, bgX2_far = move_background(1.4, background_far.get_width(), bgX_far, bgX2_far)
-            bgX_middle, bgX2_middle = move_background(1.8, background_middle.get_width(), bgX_middle, bgX2_middle)
-            bgX_foreground, bgX2_foreground = move_background(2, background_foreground.get_width(), bgX_foreground,
-                                                              bgX2_foreground)
-
-            # Look at every event in the queue
-            for event in pygame.event.get():
-                # Did the user hit a key?
-                # print("check1")
-                if event.type == KEYDOWN:
-                    # Was it the Escape key? If so, stop the loop
-                    if event.key == K_ESCAPE:
-                        print("quitting")
-                        pygame.quit()
-
-                # Did the user click the window close button? If so, stop the loop
-                elif event.type == QUIT:
-                    print("quitting")
-                    pygame.quit()
-
-                # Should we add a new enemy?
-                elif event.type == ADDENEMY:
-                    # Create the new enemy, and add it to our sprite groups
-                    new_enemy = Enemy()
-
-                    # Increase difficulty the longer the player is in the gamehhhhuh
-                    if difficultyCounter > 150:
-                        difficultyCounter = 0
-                        maxSpeed = maxSpeed + 1
-                        minSpeed = minSpeed + 1
-                        if maxSpeed > 30:
-                                maxSpeed = 30
-                                minSpeed = 28
-
-                        new_enemy.speed = random.randint(minSpeed, maxSpeed)
-                        timer = timer -5
-                        pygame.time.set_timer(ADDENEMY, timer)
-                        print('Difficulty updated. Minspeed = ', maxSpeed, ', maxspeed = ', minSpeed)
-
-                    enemies.add(new_enemy)
-                    all_sprites.add(new_enemy)
-
-                # Should we add a new cloud?
-            # elif event.type == ADDCLOUD:
-            # Create the new cloud, and add it to our sprite groups
-            # new_cloud = Cloud()
-            # clouds.add(new_cloud)
-            # all_sprites.add(new_cloud)
-
-            # Should we add a new big bubble?
-            # elif event.type == ADDBIGBUBBLE:
-            # Create the new cloud, and add it to our sprite groups
-            #   new_bigbubble = BigBubble()
-            #   bubbles.add(new_bigbubble)
-            #  all_sprites.add(new_bigbubble)
-
-            # print("check2")
-            # Get the set of keys pressed and check for user input
-            pressed_keys = pygame.key.get_pressed()
-            player.update(pressed_keys)
-
-            # Update the position of our enemies and clouds
-            enemies.update()
-            clouds.update()
-            bubbles.update()
-
-            # Fill the screen with...
-            # screen.fill((135, 206, 250))  # sky blue
-            # screen.fill((0, 0, 50))        # sea blue
-            screen.fill((0, 0, 0))  # black
-            screen.blit(background_far, [bgX_far, 0])
-            screen.blit(background_far, [bgX2_far, 0])
-            screen.blit(background_middle, [bgX_middle, 20])
-            screen.blit(background_middle, [bgX2_middle, 20])
-            screen.blit(background_foreground, [bgX_foreground, 40])
-            screen.blit(background_foreground, [bgX2_foreground, 40])
-
-            # Draw all our sprites
-            for entity in all_sprites:
-                screen.blit(entity.surf, entity.rect)
-
-                difficultyCounter = difficultyCounter + 1;
-
-
-            # print("check4")
-
-            # Check if any enemies have collided with the player
-            if pygame.sprite.spritecollideany(player, enemies):
-                # If so, remove the player
-                player.kill()
-                print("Player killed")
-                gameOverRunning = True
-
-                # Stop any moving sounds and play the collision sound
-                move_up_sound.stop()
-                move_down_sound.stop()
-                collision_sound.play()
-
-                # Stop the loop
-                mainLoopIsRunning = False
-                print("Stopping main loop")
-
-            # Flip everything to the display
-            pygame.display.flip()
-
-            # Ensure we maintain a 30 frames per second rate
-            clock.tick(50)
-
-        return gameOverRunning
-
-
-    # ====== MAIN LOOP =========
-    GameOverRunning = run_mainloop()
-
-    # ====== GAME OVER LOOP =========
-    while GameOverRunning:
-        gameover = GameOver(path, SCREEN_WIDTH, SCREEN_HEIGHT)
-        replay = PressSpaceToReplay(path, SCREEN_WIDTH, SCREEN_HEIGHT)
-        screen.blit(gameover.surf, gameover.surf_center)
-        screen.blit(replay.surf, replay.surf_center)
-
-        for event in pygame.event.get():
-            # Did the user hit a key?
-            if event.type == KEYDOWN:
-                # Was it the Escape key? If so, stop the loop
-                if event.key == K_ESCAPE:
-                    pygame.quit()
-                if event.key == K_SPACE:
-                    GameOverRunning = False
-                    run_mainloop()
-
-            # Did the user click the window close button? If so, stop the loop
-            elif event.type == QUIT:
-                pygame.quit()
-
-        pygame.display.flip()
-
-    # At this point, we're done, so we can stop and quit the mixer
+    # ====== QUIT GAME =======
     pygame.mixer.music.stop()
     pygame.mixer.quit()
 
     pygame.quit()
+

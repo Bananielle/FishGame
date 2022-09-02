@@ -96,53 +96,10 @@ if __name__ == '__MainTest__':
                 self.kill()
 
 
-    # Define the cloud object extending pygame.sprite.Sprite
-    # Use an image for a better looking sprite
-    class Cloud(pygame.sprite.Sprite):
-        def __init__(self):
-            super(Cloud, self).__init__()
-            self.surf = pygame.image.load(path + "bubble.png").convert()
-            self.surf.set_colorkey((0, 0, 0), RLEACCEL)
-            # The starting position is randomly generated
-            self.rect = self.surf.get_rect(
-                center=(
-                    random.randint(SCREEN_WIDTH + 20, SCREEN_WIDTH + 100),
-                    random.randint(0, SCREEN_HEIGHT),
-                )
-            )
-
-        # Move the cloud based on a constant speed
-        # Remove it when it passes the left edge of the screen
-        def update(self):
-            self.rect.move_ip(-5, 0)
-            if self.rect.right < 0:
-                self.kill()
 
 
-    # Define the bubble object extending pygame.sprite.Sprite
-    # Use an image for a better looking sprite
-    class BigBubble(pygame.sprite.Sprite):
-        def __init__(self):
-            super(BigBubble, self).__init__()
-            self.surf = pygame.image.load(path + "bigbubble.png").convert()
-            self.surf.set_colorkey((0, 0, 0), RLEACCEL)
-            # The starting position is randomly generated
-            self.rect = self.surf.get_rect(
-                center=(
-                    random.randint(SCREEN_WIDTH + 20, SCREEN_WIDTH + 100),
-                    random.randint(0, SCREEN_HEIGHT),
-                )
-            )
 
-        # Move the cloud based on a constant speed
-        # Remove it when it passes the left edge of the screen
-        def update(self):
-            self.rect.move_ip(-3, 0)
-            if self.rect.right < 0:
-                self.kill()
-
-
-    def runMainGame(events):
+    def runMainGame():
         gamestate = 'mainloop'
         global bgX_far, bgX2_far, bgX_middle, bgX2_middle, bgX_foreground, bgX2_foreground
 
@@ -152,9 +109,6 @@ if __name__ == '__MainTest__':
         bgX_foreground, bgX2_foreground = move_background(2, background_foreground.get_width(), bgX_foreground,
                                                           bgX2_foreground)
 
-        # Fill the screen with...
-        # screen.fill((135, 206, 250))  # sky blue
-        # screen.fill((0, 0, 50))        # sea blue
         screen.fill((0, 0, 0))  # black
         screen.blit(background_far, [bgX_far, 0])
         screen.blit(background_far, [bgX2_far, 0])
@@ -163,13 +117,19 @@ if __name__ == '__MainTest__':
         screen.blit(background_foreground, [bgX_foreground, 40])
         screen.blit(background_foreground, [bgX2_foreground, 40])
 
-        for event in events:
+        for event in pygame.event.get():
+            # Did the user hit a key?
+            # print("check1")
 
             if event.type == KEYDOWN:
                 # Was it the Escape key? If so, stop the loop
                 if event.key == K_ESCAPE:
                     print("quitting")
-                    pygame.quit()
+                    gamestate = 'quitgame'
+
+                if event.type == pygame.QUIT:
+                    gamestate = 'quitgame'
+
 
             # Should we add a new enemy?
             elif event.type == ADDENEMY:
@@ -177,20 +137,6 @@ if __name__ == '__MainTest__':
                 new_enemy = Enemy()
                 enemies.add(new_enemy)
                 all_sprites.add(new_enemy)
-
-            # Should we add a new cloud?
-        # elif event.type == ADDCLOUD:
-        # Create the new cloud, and add it to our sprite groups
-        # new_cloud = Cloud()
-        # clouds.add(new_cloud)
-        # all_sprites.add(new_cloud)
-
-        # Should we add a new big bubble?
-        # elif event.type == ADDBIGBUBBLE:
-        # Create the new cloud, and add it to our sprite groups
-        #   new_bigbubble = BigBubble()
-        #   bubbles.add(new_bigbubble)
-        #  all_sprites.add(new_bigbubble)
 
         # print("check2")
         # Get the set of keys pressed and check for user input
@@ -226,7 +172,7 @@ if __name__ == '__MainTest__':
         return gamestate
 
 
-    def runStartScreen(event):
+    def runStartScreen():
         gamestate = 'startscreen'
         startscreen = StartScreen()
         fish = Fish()
@@ -235,26 +181,42 @@ if __name__ == '__MainTest__':
         screen.blit(fish.surf, fish.location)
         screen.blit(fishadventure_text.surf, fishadventure_text.location)
 
-        if event.type == KEYDOWN:
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
 
-            # If space to start
-            if event.key == K_SPACE:
-                startscreen.kill()
-                gamestate = 'mainloop'
+                # If space to start
+                if event.key == K_SPACE:
+                    startscreen.kill()
+                    gamestate = 'mainloop'
+
+                if event.key == K_ESCAPE:
+                    print("quitting")
+                    gamestate = 'quitgame'
+
+                if event.type == pygame.QUIT:
+                    gamestate = 'quitgame'
 
         return gamestate
 
 
-    def runGameOver(event):
+    def runGameOver():
         gamestate = 'gameover'
         gameover = GameOver(path, SCREEN_WIDTH, SCREEN_HEIGHT)
         replay = PressSpaceToReplay(path, SCREEN_WIDTH, SCREEN_HEIGHT)
         screen.blit(gameover.surf, gameover.surf_center)
         screen.blit(replay.surf, replay.surf_center)
 
-        if event.type == KEYDOWN:
-            if event.key == K_SPACE:
-                gamestate = 'startscreen'
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                if event.key == K_SPACE:
+                    gamestate = 'startscreen'
+
+                if event.key == K_ESCAPE:
+                    print("quitting")
+                    gamestate = 'quitgame'
+
+                if event.type == pygame.QUIT:
+                    gamestate = 'quitgame'
 
         return gamestate
 
@@ -340,19 +302,19 @@ if __name__ == '__MainTest__':
     run = True
     while run:
 
-        events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.QUIT:
-                run = False
 
-            if gamestate == 'startscreen':
-                gamestate = runStartScreen(event)
 
-            elif gamestate == 'mainloop':
-                gamestate = runMainGame(events)
+        if gamestate == 'startscreen':
+            gamestate = runStartScreen()
 
-            elif gamestate == 'gameover':
-                gamestate = runGameOver(event)
+        elif gamestate == 'mainloop':
+            gamestate = runMainGame()
+
+        elif gamestate == 'gameover':
+            gamestate = runGameOver()
+
+        elif gamestate == 'quitgame':
+            run = False
 
         # Ensure we maintain a 30 frames per second rate
         clock.tick(30)
