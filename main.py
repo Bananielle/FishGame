@@ -100,12 +100,14 @@ if __name__ == '__main__':
                 self.kill()
 
 
-    class Game():
+    class GameParameters():
         def __init__(self):
             self.SCREEN_WIDTH = 1000
             self.SCREEN_HEIGHT = 800
-
-
+            self.difficultyCounter = 0;
+            self.maxSpeed = 15
+            self.minSpeed = 5
+            self.timer = 400
 
         def run(self):
             print('test')
@@ -113,21 +115,11 @@ if __name__ == '__main__':
 
     def runMainGame():
         gamestate = 'mainloop'
-       # global bgX_far, bgX2_far, bgX_middle, bgX2_middle, bgX_foreground, bgX2_foreground
+
 
         # Variables to increase difficulty
-        difficultyCounter = 0;
-        maxSpeed = 15
-        minSpeed = 5
-        timer = 400
 
-        # Make the background move
-        # bgX_far, bgX2_far = move_background(1.4, background_far.get_width(), bgX_far, bgX2_far)
-        # bgX_middle, bgX2_middle = move_background(1.8, background_middle.get_width(), bgX_middle, bgX2_middle)
-        # bgX_foreground, bgX2_foreground = move_background(2, background_foreground.get_width(), bgX_foreground,
-        #                                                   bgX2_foreground)
-
-        mainGame_background.moveAllBackGrounds()
+        mainGame_background.updateBackGrounds()
 
         screen.fill((0, 0, 0))  # black
         screen.blit(mainGame_background.background_far, [mainGame_background.bgX_far, 0])
@@ -159,18 +151,18 @@ if __name__ == '__main__':
                 all_sprites.add(new_enemy)
 
                 # Increase difficulty the longer the player is in the gamehhhhuh
-                if difficultyCounter > 150:
-                    difficultyCounter = 0
-                    maxSpeed = maxSpeed + 1
-                    minSpeed = minSpeed + 1
-                    if maxSpeed > 30:
-                        maxSpeed = 30
-                        minSpeed = 28
+                if gameParams.difficultyCounter > 150:
+                    gameParams.difficultyCounter = 0
+                    gameParams.maxSpeed = gameParams.maxSpeed + 1
+                    gameParams.minSpeed = gameParams.minSpeed + 1
+                    if gameParams.maxSpeed > 30:
+                        gameParams.maxSpeed = 30
+                        gameParams.minSpeed = 28
 
-                    new_enemy.speed = random.randint(minSpeed, maxSpeed)
-                    timer = timer - 5
-                    pygame.time.set_timer(ADDENEMY, timer)
-                    print('Difficulty updated. Minspeed = ', maxSpeed, ', maxspeed = ', minSpeed)
+                    new_enemy.speed = random.randint(gameParams.minSpeed, gameParams.maxSpeed)
+                    gameParams.timer = gameParams.timer - 5
+                    pygame.time.set_timer(ADDENEMY, gameParams.timer)
+                    print('Difficulty updated. Minspeed = ', gameParams.maxSpeed, ', maxspeed = ', gameParams.minSpeed)
 
         # print("check2")
         # Get the set of keys pressed and check for user input
@@ -184,7 +176,7 @@ if __name__ == '__main__':
         for entity in all_sprites:
             screen.blit(entity.surf, entity.rect)
 
-            difficultyCounter = difficultyCounter + 1;
+            gameParams.difficultyCounter = gameParams.difficultyCounter + 1;
 
         # print("check4")
 
@@ -268,50 +260,9 @@ if __name__ == '__main__':
 
         return bgX, bgX2
 
-    def setupBackground(SCREEN_WIDTH,SCREEN_HEIGHT):
-        # Setup background
-        background_far = pygame.image.load(path + 'far.png')
-        background_far = pygame.transform.scale(background_far, (SCREEN_WIDTH, background_far.get_height() * 3))
-        bgX_far = 0
-        bgX2_far = background_far.get_width()
-
-        background_middle = pygame.image.load(path + 'sand.png')
-        background_middle = pygame.transform.scale(background_middle, (SCREEN_WIDTH, SCREEN_HEIGHT - 180))
-        bgX_middle = 0
-        bgX2_middle = background_middle.get_width()
-
-        background_foreground = pygame.image.load(path + 'foreground-merged.png')
-        background_foreground = pygame.transform.scale(background_foreground, (SCREEN_WIDTH + 500, SCREEN_HEIGHT - 160))
-        bgX_foreground = 0
-        bgX2_foreground = background_foreground.get_width()
-
-        # Initialize
-        pygame.mixer.init()  # Setup for sounds, defaults are good
-        pygame.init()  # Initialize pygame
-
-        return
-
     # Setup background
-
-    # background_far = pygame.image.load(path + 'far.png')
-    # background_far = pygame.transform.scale(background_far, (SCREEN_WIDTH, background_far.get_height() * 3))
-    # bgX_far = 0
-    # bgX2_far = background_far.get_width()
-    #
-    # background_middle = pygame.image.load(path + 'sand.png')
-    # background_middle = pygame.transform.scale(background_middle, (SCREEN_WIDTH, SCREEN_HEIGHT - 180))
-    # bgX_middle = 0
-    # bgX2_middle = background_middle.get_width()
-    #
-    # background_foreground = pygame.image.load(path + 'foreground-merged.png')
-    # background_foreground = pygame.transform.scale(background_foreground, (SCREEN_WIDTH + 500, SCREEN_HEIGHT - 160))
-    # bgX_foreground = 0
-    # bgX2_foreground = background_foreground.get_width()
-
-
-
+    gameParams = GameParameters()
     mainGame_background = MainGame_background()
-
 
     # Initialize
     pygame.mixer.init()  # Setup for sounds, defaults are good
@@ -326,17 +277,10 @@ if __name__ == '__main__':
     ADDENEMY = pygame.USEREVENT + 1
     pygame.time.set_timer(ADDENEMY, 400)
 
-    ADDCLOUD = pygame.USEREVENT + 2
-    pygame.time.set_timer(ADDCLOUD, 2000)
-
-    ADDBIGBUBBLE = pygame.USEREVENT + 3
-    pygame.time.set_timer(ADDBIGBUBBLE, 3000)
 
     # Create the sprites
     player = Player()  # Create our 'player'
     enemies = pygame.sprite.Group()  # - enemies is used for collision detection and position updates
-    clouds = pygame.sprite.Group()  # - clouds is used for position updates
-    bubbles = pygame.sprite.Group()  # Same for bubbles
     all_sprites = pygame.sprite.Group()  # - all_sprites isused for rendering
     all_sprites.add(player)
 

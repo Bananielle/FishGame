@@ -33,7 +33,7 @@ class MainGame_background(pygame.sprite.Sprite):
         self.bgX_foreground = 0
         self.bgX2_foreground = self.background_foreground.get_width()
 
-    def moveAllBackGrounds(self):
+    def updateBackGrounds(self):
         self.bgX_far, self.bgX2_far = self.move_background(1.4, self.background_far.get_width(), self.bgX_far,
                                                            self.bgX2_far)
         self.bgX_middle, self.bgX2_middle = self.move_background(1.8, self.background_middle.get_width(),
