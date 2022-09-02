@@ -5,6 +5,7 @@
 
 import pygame, random
 
+from MainGame_background import MainGame_background
 from gameover import GameOver, PressSpaceToReplay
 from startscreen import StartScreen, Fish, FishAdventure
 
@@ -112,7 +113,7 @@ if __name__ == '__main__':
 
     def runMainGame():
         gamestate = 'mainloop'
-        global bgX_far, bgX2_far, bgX_middle, bgX2_middle, bgX_foreground, bgX2_foreground
+       # global bgX_far, bgX2_far, bgX_middle, bgX2_middle, bgX_foreground, bgX2_foreground
 
         # Variables to increase difficulty
         difficultyCounter = 0;
@@ -121,18 +122,20 @@ if __name__ == '__main__':
         timer = 400
 
         # Make the background move
-        bgX_far, bgX2_far = move_background(1.4, background_far.get_width(), bgX_far, bgX2_far)
-        bgX_middle, bgX2_middle = move_background(1.8, background_middle.get_width(), bgX_middle, bgX2_middle)
-        bgX_foreground, bgX2_foreground = move_background(2, background_foreground.get_width(), bgX_foreground,
-                                                          bgX2_foreground)
+        # bgX_far, bgX2_far = move_background(1.4, background_far.get_width(), bgX_far, bgX2_far)
+        # bgX_middle, bgX2_middle = move_background(1.8, background_middle.get_width(), bgX_middle, bgX2_middle)
+        # bgX_foreground, bgX2_foreground = move_background(2, background_foreground.get_width(), bgX_foreground,
+        #                                                   bgX2_foreground)
+
+        mainGame_background.moveAllBackGrounds()
 
         screen.fill((0, 0, 0))  # black
-        screen.blit(background_far, [bgX_far, 0])
-        screen.blit(background_far, [bgX2_far, 0])
-        screen.blit(background_middle, [bgX_middle, 20])
-        screen.blit(background_middle, [bgX2_middle, 20])
-        screen.blit(background_foreground, [bgX_foreground, 40])
-        screen.blit(background_foreground, [bgX2_foreground, 40])
+        screen.blit(mainGame_background.background_far, [mainGame_background.bgX_far, 0])
+        screen.blit(mainGame_background.background_far, [mainGame_background.bgX2_far, 0])
+        screen.blit(mainGame_background.background_middle, [mainGame_background.bgX_middle, 20])
+        screen.blit(mainGame_background.background_middle, [mainGame_background.bgX2_middle, 20])
+        screen.blit(mainGame_background.background_foreground, [mainGame_background.bgX_foreground, 40])
+        screen.blit(mainGame_background.background_foreground, [mainGame_background.bgX2_foreground, 40])
 
         for event in pygame.event.get():
             # Did the user hit a key?
@@ -289,20 +292,26 @@ if __name__ == '__main__':
         return
 
     # Setup background
-    background_far = pygame.image.load(path + 'far.png')
-    background_far = pygame.transform.scale(background_far, (SCREEN_WIDTH, background_far.get_height() * 3))
-    bgX_far = 0
-    bgX2_far = background_far.get_width()
 
-    background_middle = pygame.image.load(path + 'sand.png')
-    background_middle = pygame.transform.scale(background_middle, (SCREEN_WIDTH, SCREEN_HEIGHT - 180))
-    bgX_middle = 0
-    bgX2_middle = background_middle.get_width()
+    # background_far = pygame.image.load(path + 'far.png')
+    # background_far = pygame.transform.scale(background_far, (SCREEN_WIDTH, background_far.get_height() * 3))
+    # bgX_far = 0
+    # bgX2_far = background_far.get_width()
+    #
+    # background_middle = pygame.image.load(path + 'sand.png')
+    # background_middle = pygame.transform.scale(background_middle, (SCREEN_WIDTH, SCREEN_HEIGHT - 180))
+    # bgX_middle = 0
+    # bgX2_middle = background_middle.get_width()
+    #
+    # background_foreground = pygame.image.load(path + 'foreground-merged.png')
+    # background_foreground = pygame.transform.scale(background_foreground, (SCREEN_WIDTH + 500, SCREEN_HEIGHT - 160))
+    # bgX_foreground = 0
+    # bgX2_foreground = background_foreground.get_width()
 
-    background_foreground = pygame.image.load(path + 'foreground-merged.png')
-    background_foreground = pygame.transform.scale(background_foreground, (SCREEN_WIDTH + 500, SCREEN_HEIGHT - 160))
-    bgX_foreground = 0
-    bgX2_foreground = background_foreground.get_width()
+
+
+    mainGame_background = MainGame_background()
+
 
     # Initialize
     pygame.mixer.init()  # Setup for sounds, defaults are good
