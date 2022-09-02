@@ -84,7 +84,12 @@ if __name__ == '__main__':
                     random.randint(0, SCREEN_HEIGHT),
                 )
             )
-            self.speed = random.randint(5, 15)
+            self.minSpeed = 5
+            self.maxSpeed = 15
+            self.speed = random.randint(self.minSpeed, self.maxSpeed)
+
+        def increaseDifficulty(self, increaseSpeedBy):
+            self.speed = random.randint(5 + increaseSpeedBy, 15 + increaseSpeedBy)
 
         # Move the enemy based on speed
         # Remove it when it passes the left edge of the screen
@@ -108,6 +113,12 @@ if __name__ == '__main__':
     def runMainGame():
         gamestate = 'mainloop'
         global bgX_far, bgX2_far, bgX_middle, bgX2_middle, bgX_foreground, bgX2_foreground
+
+        # Variables to increase difficulty
+        difficultyCounter = 0;
+        maxSpeed = 15
+        minSpeed = 5
+        timer = 400
 
         # Make the background move
         bgX_far, bgX2_far = move_background(1.4, background_far.get_width(), bgX_far, bgX2_far)
@@ -144,6 +155,20 @@ if __name__ == '__main__':
                 enemies.add(new_enemy)
                 all_sprites.add(new_enemy)
 
+                # Increase difficulty the longer the player is in the gamehhhhuh
+                if difficultyCounter > 150:
+                    difficultyCounter = 0
+                    maxSpeed = maxSpeed + 1
+                    minSpeed = minSpeed + 1
+                    if maxSpeed > 30:
+                        maxSpeed = 30
+                        minSpeed = 28
+
+                    new_enemy.speed = random.randint(minSpeed, maxSpeed)
+                    timer = timer - 5
+                    pygame.time.set_timer(ADDENEMY, timer)
+                    print('Difficulty updated. Minspeed = ', maxSpeed, ', maxspeed = ', minSpeed)
+
         # print("check2")
         # Get the set of keys pressed and check for user input
         pressed_keys = pygame.key.get_pressed()
@@ -155,6 +180,8 @@ if __name__ == '__main__':
         # Draw all our sprites
         for entity in all_sprites:
             screen.blit(entity.surf, entity.rect)
+
+            difficultyCounter = difficultyCounter + 1;
 
         # print("check4")
 
@@ -341,7 +368,7 @@ if __name__ == '__main__':
             run = False
 
         # Ensure we maintain a 30 frames per second rate
-        clock.tick(30)
+        clock.tick(50)
         pygame.display.flip()
 
     # ====== QUIT GAME =======
