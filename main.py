@@ -101,7 +101,6 @@ if __name__ == '__main__':
                 if self.rect.right < 0:
                     self.kill()
 
-
         class GameParameters():
             def __init__(self):
                 self.SCREEN_WIDTH = 1000
@@ -110,6 +109,10 @@ if __name__ == '__main__':
                 self.maxSpeed = 15
                 self.minSpeed = 5
                 self.timer = 400
+                self.gameTimeCounter = 0
+                self.counterText = str('0').rjust(3)
+                self.font = pygame.font.SysFont('herculanum', 35, bold=True, )
+                self.gameCounterText = self.font.render(self.counterText, True, (255, 184, 28))
 
                 # Create custom events for adding a new enemy and cloud
                 self.ADDENEMY = pygame.USEREVENT + 1
@@ -121,6 +124,9 @@ if __name__ == '__main__':
                 self.enemies = pygame.sprite.Group()  # - enemies is used for collision detection and position updates
                 self.all_sprites = pygame.sprite.Group()  # - all_sprites isused for rendering
                 self.all_sprites.add(self.player)
+
+                # Counter
+                pygame.time.set_timer(pygame.USEREVENT, 1000)
 
             def reset(self):
                 self.all_sprites.empty()
@@ -134,6 +140,7 @@ if __name__ == '__main__':
             gamestate = 'mainloop'
 
             mainGame_background.updateBackGrounds()
+
 
             screen.fill((0, 0, 0))  # black
             screen.blit(mainGame_background.background_far, [mainGame_background.bgX_far, 0])
@@ -155,9 +162,18 @@ if __name__ == '__main__':
                         gamestate = 'quitgame'
                         print('Going to state: ' + gamestate)
 
-                    if event.type == pygame.QUIT:
-                        gamestate = 'quitgame'
-                        print('Going to state: ' + gamestate)
+                # Show the player how much time as passed
+                if event.type == pygame.USEREVENT:
+                    gameParams.gameTimeCounter += 1
+                    text = str(gameParams.gameTimeCounter).rjust(3)
+                    gameParams.gameCounterText = gameParams.font.render(text, True, (255,184,28))
+
+
+                    print(text)
+
+                if event.type == pygame.QUIT:
+                    gamestate = 'quitgame'
+                    print('Going to state: ' + gamestate)
 
 
                 # Should we add a new enemy?
@@ -196,6 +212,9 @@ if __name__ == '__main__':
                 gameParams.difficultyCounter = gameParams.difficultyCounter + 1;
 
             # print("check4")
+
+            # Draw counter text
+            screen.blit(gameParams.gameCounterText, (SCREEN_WIDTH - 70, 20))
 
             # Check if any enemies have collided with the player
             if pygame.sprite.spritecollideany(gameParams.player, gameParams.enemies):
@@ -238,8 +257,9 @@ if __name__ == '__main__':
                         gamestate = 'quitgame'
                         print('Going to state: ' + gamestate)
 
-                    if event.type == pygame.QUIT:
-                        gamestate = 'quitgame'
+                if event.type == pygame.QUIT:
+                    gamestate = 'quitgame'
+
 
             return gamestate
 
@@ -268,9 +288,9 @@ if __name__ == '__main__':
                         gamestate = 'quitgame'
                         print('Going to state: ' + gamestate)
 
-                    if event.type == pygame.QUIT:
-                        gamestate = 'quitgame'
-                        print('Going to state: ' + gamestate)
+                if event.type == pygame.QUIT:
+                    gamestate = 'quitgame'
+                    print('Going to state: ' + gamestate)
 
             return gamestate
 
@@ -290,10 +310,13 @@ if __name__ == '__main__':
         pygame.mixer.init()  # Setup for sounds, defaults are good
         pygame.init()  # Initialize pygame
 
-        # Screen and clock
+        # Clock
         clock = pygame.time.Clock()  # Setup the clock for a decent framerate
+
+        # Screen
+        SURFACE = pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE
         screen = pygame.display.set_mode((SCREEN_WIDTH,
-                                          SCREEN_HEIGHT))  # Create the screen object. The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
+                                          SCREEN_HEIGHT), SURFACE)  # Create the screen object. The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
 
         # Load and play our background music
         # Sound source: http://ccmixter.org/files/Apoxode/59262
