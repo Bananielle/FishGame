@@ -366,7 +366,6 @@ if __name__ == '__main__':
             return gamestate, GameParameters(), MainGame_background() # Reinitialize game parameters and background
 
 
-
         # INITIALIZE MAIN GAME SCREEN
 
         # Initialize
