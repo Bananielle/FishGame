@@ -19,6 +19,7 @@ def print_hi(name):
 if __name__ == '__main__':
     print_hi('PyCharm')
 
+
     def run():
 
         path = "/Users/danielle/Documents/"
@@ -39,7 +40,6 @@ if __name__ == '__main__':
         # Define constants for the screen width and height
         SCREEN_WIDTH = 1000
         SCREEN_HEIGHT = 800
-
 
         # Define the Player object extending pygame.sprite.Sprite
         # Instead of a surface, we use an image for a better looking sprite
@@ -133,7 +133,6 @@ if __name__ == '__main__':
             def reset(self):
                 self.all_sprites.empty()
 
-
             def run(self):
                 print('test')
 
@@ -141,36 +140,47 @@ if __name__ == '__main__':
             def __init__(self):
                 self.scoresList = []
                 self.font = pygame.font.SysFont('herculanum', 35, bold=True, )
-                self.scoreboard_text = self.font.render("Scoreboard", True, (255, 184, 28))
+
                 self.scores_string = ' '
                 self.scores_text = self.font.render(self.scores_string, True, (255, 184, 28))
 
-
-            def addScoretoScoreBoard(self,score):
+            def addScoretoScoreBoard(self, score):
                 if not gameParams.scoreSaved:
                     self.scoresList.append(score)
-                    gameParams.scoreSaved = True # This will reset when the player goes back to the start screen
+                    gameParams.scoreSaved = True  # This will reset when the player goes back to the start screen
                     print('Score ', score, ' saved to score list. Is now: ', str(self.scoresList))
 
-
-            def sortScores(self):
-                sortedScores = self.scoresList.sort()
-
-                return sortedScores
-
             def displayScoreboard(self):
-                self.scores_string = str(self.scoresList)
-                self.scores_text = self.font.render(self.scores_string, True, (255, 184, 28))
 
-                screen.blit(self.scoreboard_text, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
+                text1 = 'Scoreboard'
+                text2 = '(seconds lasted)'
+                scoreboard = self.font.render(text1, True, (255, 184, 28))
+                secondsLasted = self.font.render(text2, True, (255, 184, 28))
 
+                screen.blit(scoreboard,
+                            ((SCREEN_WIDTH / 2) - (SCREEN_WIDTH * 0.11), (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT * 0.40)))
+                # screen.blit(secondsLasted,((SCREEN_WIDTH / 2) - (SCREEN_WIDTH * 0.14), (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT * 0.40)+30))
+
+                currentScoreFound = False
                 newPosition = 30
-                for score in self.scoresList:
-                    scores_text = self.font.render(str(score), True, (255, 184, 28))
-                    screen.blit(scores_text, (SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 2)+newPosition))
-                    newPosition +=25
-                    print('score ', score, ' printed')
-
+                count = 1
+                sortedScores = sorted(self.scoresList, reverse=True)
+                for score in sortedScores:
+                    count_str = str(count) + '.'
+                    if score == gameParams.gameTimeCounter and not currentScoreFound:
+                        scores_text = self.font.render(str(score) + ' seconds', True, (255, 0, 28))
+                        count_text = self.font.render(count_str, True, (255, 0, 28))
+                        currentScoreFound = True
+                    else:
+                        scores_text = self.font.render(str(score) + ' seconds', True, (255, 184, 28))
+                        count_text = self.font.render(count_str, True, (255, 184, 28))
+                    screen.blit(count_text,
+                                ((SCREEN_WIDTH / 2.2) - 80, (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT * 0.35) + newPosition))
+                    screen.blit(scores_text,
+                                ((SCREEN_WIDTH / 2.2), (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT * 0.35) + newPosition))
+                    newPosition += 30
+                    count += 1
+                    # print('score ', score, ' printed')
 
         def displaySeaBackgroundsOnScreen():
 
@@ -182,9 +192,9 @@ if __name__ == '__main__':
             screen.blit(mainGame_background.background_foreground, [mainGame_background.bgX_foreground, 40])
             screen.blit(mainGame_background.background_foreground, [mainGame_background.bgX2_foreground, 40])
 
-            #return mainGame_background
+            # return mainGame_background
 
-        def playerPressedQuit(gamestate, event):
+        def didPlayerPressQuit(gamestate, event):
 
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
@@ -221,13 +231,11 @@ if __name__ == '__main__':
                 if event.type == pygame.USEREVENT:
                     gameParams.gameTimeCounter += 1
                     text = str(gameParams.gameTimeCounter).rjust(3)
-                    gameParams.gameCounterText = gameParams.font.render(text, True, (255,184,28))
-
+                    gameParams.gameCounterText = gameParams.font.render(text, True, (255, 184, 28))
 
                     print(text)
 
-                gamestate = playerPressedQuit(gamestate,event)
-
+                gamestate = didPlayerPressQuit(gamestate, event)
 
                 # Should we add a new enemy?
                 if event.type == gameParams.ADDENEMY:
@@ -248,7 +256,8 @@ if __name__ == '__main__':
                         new_enemy.speed = random.randint(gameParams.minSpeed, gameParams.maxSpeed)
                         gameParams.timer = gameParams.timer - 5
                         pygame.time.set_timer(gameParams.ADDENEMY, gameParams.timer)
-                        print('Main game: Difficulty updated. Minspeed = ', gameParams.maxSpeed, ', maxspeed = ', gameParams.minSpeed)
+                        print('Main game: Difficulty updated. Minspeed = ', gameParams.maxSpeed, ', maxspeed = ',
+                              gameParams.minSpeed)
 
             # print("check2")
             # Get the set of keys pressed and check for user input
@@ -288,7 +297,7 @@ if __name__ == '__main__':
 
         def runStartScreen():
             gamestate = 'startscreen'
-            screen.fill([0, 0, 0]) # Set black background
+            screen.fill([0, 0, 0])  # Set black background
             startscreen = StartScreen()
             fish = Fish()
             fishadventure_text = FishAdventure()
@@ -304,8 +313,7 @@ if __name__ == '__main__':
                         gamestate = 'startNewGame'
                         print('Going to state: ' + gamestate)
 
-                    gamestate = playerPressedQuit(gamestate,event)
-
+                    gamestate = didPlayerPressQuit(gamestate, event)
 
             return gamestate
 
@@ -319,28 +327,25 @@ if __name__ == '__main__':
             # Save the score for the player
             scoreboard.addScoretoScoreBoard(gameParams.gameTimeCounter)
 
-
             for event in pygame.event.get():
 
                 if event.type == KEYDOWN:
 
                     if event.key == K_SPACE:
-
                         gamestate = 'scoreboard'
                         print('Going to state: ' + gamestate)
 
                         # Reset game parameters if you want to restart a game
                         gameParams.reset()
 
-                gamestate = playerPressedQuit(gamestate,event)
+                gamestate = didPlayerPressQuit(gamestate, event)
 
             return gamestate
 
         def runScoreboard():
             gamestate = 'scoreboard'
-            #screen.fill([0, 0, 0])  # Set black background
-            displaySeaBackgroundsOnScreen()
 
+            displaySeaBackgroundsOnScreen()
             scoreboard.displayScoreboard()
 
             for event in pygame.event.get():
@@ -354,7 +359,7 @@ if __name__ == '__main__':
                         gameParams.reset()
                         # del mainGame_background
 
-                gamestate = playerPressedQuit(gamestate,event)
+                gamestate = didPlayerPressQuit(gamestate, event)
 
             return gamestate
 
@@ -363,8 +368,7 @@ if __name__ == '__main__':
             gamestate = 'mainloop'
             print('Going to state: ' + gamestate)
 
-            return gamestate, GameParameters(), MainGame_background() # Reinitialize game parameters and background
-
+            return gamestate, GameParameters(), MainGame_background()  # Reinitialize game parameters and background
 
         # INITIALIZE MAIN GAME SCREEN
 
@@ -378,7 +382,8 @@ if __name__ == '__main__':
         # Screen
         SURFACE = pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE
         screen = pygame.display.set_mode((SCREEN_WIDTH,
-                                          SCREEN_HEIGHT), SURFACE)  # Create the screen object. The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
+                                          SCREEN_HEIGHT),
+                                         SURFACE)  # Create the screen object. The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
 
         # Load and play our background music
         # Sound source: http://ccmixter.org/files/Apoxode/59262
@@ -402,9 +407,7 @@ if __name__ == '__main__':
         gamestate, gameParams, mainGame_background = startANewGame()
         scoreboard = Scoreboard()
 
-
         # START OF A NEW GAME (needs to happen every time a new game is started)
-
 
         # ========== GAME STATES ==============
         gamestate = 'startscreen'
@@ -440,4 +443,5 @@ if __name__ == '__main__':
 
         pygame.quit()
 
-    run() # Run the main script
+
+    run()  # Run the main script
