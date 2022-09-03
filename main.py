@@ -172,12 +172,7 @@ if __name__ == '__main__':
                     print('score ', score, ' printed')
 
 
-
-        def runMainGame():
-            gamestate = 'mainloop'
-
-            mainGame_background.updateBackGrounds()
-
+        def displaySeaBackgroundsOnScreen():
 
             screen.fill((0, 0, 0))  # black
             screen.blit(mainGame_background.background_far, [mainGame_background.bgX_far, 0])
@@ -187,17 +182,40 @@ if __name__ == '__main__':
             screen.blit(mainGame_background.background_foreground, [mainGame_background.bgX_foreground, 40])
             screen.blit(mainGame_background.background_foreground, [mainGame_background.bgX2_foreground, 40])
 
+            #return mainGame_background
+
+        def playerPressedQuit(gamestate, event):
+
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    gamestate = 'quitgame'
+                    print('Going to state: ' + gamestate)
+
+            elif event.type == pygame.QUIT:
+                gamestate = 'quitgame'
+                print('Going to state: ' + gamestate)
+
+            return gamestate
+
+        def runMainGame():
+            gamestate = 'mainloop'
+
+            mainGame_background.updateBackGrounds()
+            displaySeaBackgroundsOnScreen()
+
+            # mainGame_background.updateBackGrounds()
+            #
+            # screen.fill((0, 0, 0))  # black
+            # screen.blit(mainGame_background.background_far, [mainGame_background.bgX_far, 0])
+            # screen.blit(mainGame_background.background_far, [mainGame_background.bgX2_far, 0])
+            # screen.blit(mainGame_background.background_middle, [mainGame_background.bgX_middle, 20])
+            # screen.blit(mainGame_background.background_middle, [mainGame_background.bgX2_middle, 20])
+            # screen.blit(mainGame_background.background_foreground, [mainGame_background.bgX_foreground, 40])
+            # screen.blit(mainGame_background.background_foreground, [mainGame_background.bgX2_foreground, 40])
+
             for event in pygame.event.get():
                 # Did the user hit a key?
                 # print("check1")
-
-
-                if event.type == KEYDOWN:
-                    # Was it the Escape key? If so, stop the loop
-                    if event.key == K_ESCAPE:
-                        print("Main game: quitting")
-                        gamestate = 'quitgame'
-                        print('Going to state: ' + gamestate)
 
                 # Show the player how much time as passed
                 if event.type == pygame.USEREVENT:
@@ -208,13 +226,11 @@ if __name__ == '__main__':
 
                     print(text)
 
-                if event.type == pygame.QUIT:
-                    gamestate = 'quitgame'
-                    print('Going to state: ' + gamestate)
+                gamestate = playerPressedQuit(gamestate,event)
 
 
                 # Should we add a new enemy?
-                elif event.type == gameParams.ADDENEMY:
+                if event.type == gameParams.ADDENEMY:
                     # Create the new enemy, and add it to our sprite groups
                     new_enemy = Enemy()
                     gameParams.enemies.add(new_enemy)
@@ -270,7 +286,6 @@ if __name__ == '__main__':
 
             return gamestate
 
-
         def runStartScreen():
             gamestate = 'startscreen'
             screen.fill([0, 0, 0]) # Set black background
@@ -289,17 +304,10 @@ if __name__ == '__main__':
                         gamestate = 'startNewGame'
                         print('Going to state: ' + gamestate)
 
-                    if event.key == K_ESCAPE:
-                        print("Start screen: quitting")
-                        gamestate = 'quitgame'
-                        print('Going to state: ' + gamestate)
-
-                if event.type == pygame.QUIT:
-                    gamestate = 'quitgame'
+                    gamestate = playerPressedQuit(gamestate,event)
 
 
             return gamestate
-
 
         def runGameOver():
             gamestate = 'gameover'
@@ -310,10 +318,32 @@ if __name__ == '__main__':
 
             # Save the score for the player
             scoreboard.addScoretoScoreBoard(gameParams.gameTimeCounter)
-            scoreboard.displayScoreboard()
+
 
             for event in pygame.event.get():
 
+                if event.type == KEYDOWN:
+
+                    if event.key == K_SPACE:
+
+                        gamestate = 'scoreboard'
+                        print('Going to state: ' + gamestate)
+
+                        # Reset game parameters if you want to restart a game
+                        gameParams.reset()
+
+                gamestate = playerPressedQuit(gamestate,event)
+
+            return gamestate
+
+        def runScoreboard():
+            gamestate = 'scoreboard'
+            #screen.fill([0, 0, 0])  # Set black background
+            displaySeaBackgroundsOnScreen()
+
+            scoreboard.displayScoreboard()
+
+            for event in pygame.event.get():
                 if event.type == KEYDOWN:
 
                     if event.key == K_SPACE:
@@ -322,19 +352,11 @@ if __name__ == '__main__':
 
                         # Reset game parameters if you want to restart a game
                         gameParams.reset()
-                        #del mainGame_background
+                        # del mainGame_background
 
-                    if event.key == K_ESCAPE:
-                        print("Game over screen: quitting")
-                        gamestate = 'quitgame'
-                        print('Going to state: ' + gamestate)
-
-                if event.type == pygame.QUIT:
-                    gamestate = 'quitgame'
-                    print('Going to state: ' + gamestate)
+                gamestate = playerPressedQuit(gamestate,event)
 
             return gamestate
-
 
         def startANewGame():
             print('Starting a new game.')
@@ -401,6 +423,9 @@ if __name__ == '__main__':
 
             elif gamestate == 'gameover':
                 gamestate = runGameOver()
+
+            elif gamestate == 'scoreboard':
+                gamestate = runScoreboard()
 
             elif gamestate == 'quitgame':
                 run = False
