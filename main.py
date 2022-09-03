@@ -114,6 +114,8 @@ if __name__ == '__main__':
                 self.font = pygame.font.SysFont('herculanum', 35, bold=True, )
                 self.gameCounterText = self.font.render(self.counterText, True, (255, 184, 28))
 
+                self.scoreSaved = False
+
                 # Create custom events for adding a new enemy and cloud
                 self.ADDENEMY = pygame.USEREVENT + 1
                 pygame.time.set_timer(self.ADDENEMY, 400)
@@ -134,6 +136,41 @@ if __name__ == '__main__':
 
             def run(self):
                 print('test')
+
+        class Scoreboard():
+            def __init__(self):
+                self.scoresList = []
+                self.font = pygame.font.SysFont('herculanum', 35, bold=True, )
+                self.scoreboard_text = self.font.render("Scoreboard", True, (255, 184, 28))
+                self.scores_string = ' '
+                self.scores_text = self.font.render(self.scores_string, True, (255, 184, 28))
+
+
+            def addScoretoScoreBoard(self,score):
+                if not gameParams.scoreSaved:
+                    self.scoresList.append(score)
+                    gameParams.scoreSaved = True # This will reset when the player goes back to the start screen
+                    print('Score ', score, ' saved to score list. Is now: ', str(self.scoresList))
+
+
+            def sortScores(self):
+                sortedScores = self.scoresList.sort()
+
+                return sortedScores
+
+            def displayScoreboard(self):
+                self.scores_string = str(self.scoresList)
+                self.scores_text = self.font.render(self.scores_string, True, (255, 184, 28))
+
+                screen.blit(self.scoreboard_text, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
+
+                newPosition = 30
+                for score in self.scoresList:
+                    scores_text = self.font.render(str(score), True, (255, 184, 28))
+                    screen.blit(scores_text, (SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 2)+newPosition))
+                    newPosition +=25
+                    print('score ', score, ' printed')
+
 
 
         def runMainGame():
@@ -271,6 +308,10 @@ if __name__ == '__main__':
             screen.blit(gameover.surf, gameover.surf_center)
             screen.blit(replay.surf, replay.surf_center)
 
+            # Save the score for the player
+            scoreboard.addScoretoScoreBoard(gameParams.gameTimeCounter)
+            scoreboard.displayScoreboard()
+
             for event in pygame.event.get():
 
                 if event.type == KEYDOWN:
@@ -338,6 +379,7 @@ if __name__ == '__main__':
         collision_sound.set_volume(0.5)
 
         gamestate, gameParams, mainGame_background = startANewGame()
+        scoreboard = Scoreboard()
 
 
         # START OF A NEW GAME (needs to happen every time a new game is started)
