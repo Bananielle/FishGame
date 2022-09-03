@@ -141,39 +141,38 @@ if __name__ == '__main__':
                 self.scoresList = []
                 self.font = pygame.font.SysFont('herculanum', 35, bold=True, )
 
-                self.scores_string = ' '
-                self.scores_text = self.font.render(self.scores_string, True, (255, 184, 28))
-
             def addScoretoScoreBoard(self, score):
                 if not gameParams.scoreSaved:
                     self.scoresList.append(score)
                     gameParams.scoreSaved = True  # This will reset when the player goes back to the start screen
                     print('Score ', score, ' saved to score list. Is now: ', str(self.scoresList))
 
+            def makeFont(self, string):
+                text = self.font.render(string, True, (170,22,166))
+                return text
+
             def displayScoreboard(self):
 
-                text1 = 'Scoreboard'
-                text2 = '(seconds lasted)'
-                scoreboard = self.font.render(text1, True, (255, 184, 28))
-                secondsLasted = self.font.render(text2, True, (255, 184, 28))
-
-                screen.blit(scoreboard,
-                            ((SCREEN_WIDTH / 2) - (SCREEN_WIDTH * 0.11), (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT * 0.40)))
-                # screen.blit(secondsLasted,((SCREEN_WIDTH / 2) - (SCREEN_WIDTH * 0.14), (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT * 0.40)+30))
+                scoreboard = self.makeFont('Scoreboard')
+                screen.blit(scoreboard, ((SCREEN_WIDTH / 2) - (SCREEN_WIDTH * 0.11), (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT * 0.40)))
 
                 currentScoreFound = False
                 newPosition = 30
                 count = 1
                 sortedScores = sorted(self.scoresList, reverse=True)
+
+                # Put each score on the screen in descending order
                 for score in sortedScores:
                     count_str = str(count) + '.'
-                    if score == gameParams.gameTimeCounter and not currentScoreFound:
-                        scores_text = self.font.render(str(score) + ' seconds', True, (255, 0, 28))
-                        count_text = self.font.render(count_str, True, (255, 0, 28))
-                        currentScoreFound = True
-                    else:
+                    if score == gameParams.gameTimeCounter and not currentScoreFound: # Colour the currently achieved score red
                         scores_text = self.font.render(str(score) + ' seconds', True, (255, 184, 28))
                         count_text = self.font.render(count_str, True, (255, 184, 28))
+                        currentScoreFound = True
+                    else:
+                        scores_text = self.makeFont(str(score) + ' seconds')
+                        count_text = self.makeFont(count_str)
+
+                    # Put score on screen
                     screen.blit(count_text,
                                 ((SCREEN_WIDTH / 2.2) - 80, (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT * 0.35) + newPosition))
                     screen.blit(scores_text,
@@ -346,6 +345,8 @@ if __name__ == '__main__':
             gamestate = 'scoreboard'
 
             displaySeaBackgroundsOnScreen()
+            replay = PressSpaceToReplay(path, SCREEN_WIDTH, SCREEN_HEIGHT)
+            screen.blit(replay.surf, replay.surf_center)
             scoreboard.displayScoreboard()
 
             for event in pygame.event.get():
@@ -355,9 +356,9 @@ if __name__ == '__main__':
                         gamestate = 'startscreen'
                         print('Going to state: ' + gamestate)
 
-                        # Reset game parameters if you want to restart a game
-                        gameParams.reset()
-                        # del mainGame_background
+
+                        gameParams.reset() # Reset game parameters if you want to restart a game
+
 
                 gamestate = didPlayerPressQuit(gamestate, event)
 
