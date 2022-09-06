@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     def run():
 
-        path = "/Users/danielle/PycharmProjects/pythonProject1/sounds_pics/"
+        path = "/Users/danielle/PycharmProjects/FishGame/sounds_pics/"
 
         # Import pygame.locals for easier access to key coordinates. Updated to conform to flake8 and black standards
         from pygame.locals import (
@@ -52,20 +52,23 @@ if __name__ == '__main__':
                 super(Player, self).__init__()
                 self.surf = pygame.image.load(path + "fish.png").convert()
                 self.surf.set_colorkey((0, 0, 0), RLEACCEL)
-                self.rect = self.surf.get_rect()
+                self.rect = self.surf.get_rect(center=(
+                        random.randint(20, 60),
+                        random.randint(SCREEN_HEIGHT-100, SCREEN_HEIGHT-40),
+                    ))
 
             # Move the sprite based on keypresses
             def update(self, pressed_keys):
                 if pressed_keys[K_UP]:
-                    self.rect.move_ip(0, -5)
+                    self.rect.move_ip(0, -10)
                     channel1.play(move_up_sound)
                 if pressed_keys[K_DOWN]:
-                    self.rect.move_ip(0, 5)
+                    self.rect.move_ip(0, 10)
                     channel1.play(move_up_sound)
                 if pressed_keys[K_LEFT]:
-                    self.rect.move_ip(-5, 0)
+                    self.rect.move_ip(-10, 0)
                 if pressed_keys[K_RIGHT]:
-                    self.rect.move_ip(5, 0)
+                    self.rect.move_ip(10, 0)
 
                 # Keep player on the screen
                 if self.rect.left < 0:
@@ -88,7 +91,7 @@ if __name__ == '__main__':
                 self.rect = self.surf.get_rect(
                     center=(
                         random.randint(SCREEN_WIDTH + 20, SCREEN_WIDTH + 100),
-                        random.randint(0, SCREEN_HEIGHT),
+                        random.randint(0, SCREEN_HEIGHT-400),
                     )
                 )
                 self.minSpeed = 5
@@ -110,11 +113,11 @@ if __name__ == '__main__':
                 self.SCREEN_WIDTH = 1000
                 self.SCREEN_HEIGHT = 800
                 self.difficultyCounter = 0
-                self.maxSpeed = 15
-                self.minSpeed = 5
+                self.maxSpeed = 10
+                self.minSpeed = 3
                 self.timer = 400
-                self.gameTimeCounter = 0
-                self.counterText = str('0').rjust(3)
+                self.gameTimeCounter = 10
+                self.counterText = str('-').rjust(3)
                 self.font = pygame.font.SysFont('herculanum', 35, bold=True, )
                 self.gameTimeCounterText = self.font.render(self.counterText, True, PINK)
 
@@ -225,13 +228,15 @@ if __name__ == '__main__':
                 # Did the user hit a key?
                 # print("check1")
 
+
+
                 # Show the player how much time as passed
                 if event.type == pygame.USEREVENT:
-                    if (gameParams.gameTimeCounter > 5):
+                    if (gameParams.gameTimeCounter == 0):
                         gamestate = 'gameover'
                         gameParams.player.kill()
                     else:
-                        gameParams.gameTimeCounter += 1
+                        gameParams.gameTimeCounter -= 1
                         text = str(gameParams.gameTimeCounter).rjust(3)
                         gameParams.gameTimeCounterText = scoreboard.makePinkFont(text)
                         print(text)
@@ -286,7 +291,7 @@ if __name__ == '__main__':
                     coin_sound.play()
                     gameParams.nrSharksCollected += 1
                     # Show the player how much coins have been collected
-                    text = str(gameParams.nrSharksCollected).rjust(3)
+                    text =  str(gameParams.nrSharksCollected).rjust(3)
                     gameParams.nrSharksCollectedText = gameParams.font.render(text, True, GOLD)
 
             # Draw game time counter text
