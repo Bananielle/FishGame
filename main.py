@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     def run():
 
-        path = "/Users/danielle/Documents/"
+        path = "/Users/danielle/PycharmProjects/pythonProject1/sounds_pics/"
 
         # Import pygame.locals for easier access to key coordinates. Updated to conform to flake8 and black standards
         from pygame.locals import (
@@ -278,19 +278,27 @@ if __name__ == '__main__':
             screen.blit(gameParams.gameCounterText, (SCREEN_WIDTH - 70, 20))
 
             # Check if any enemies have collided with the player
-            if pygame.sprite.spritecollideany(gameParams.player, gameParams.enemies):
-                # If so, remove the player
-                gameParams.player.kill()
-                print("Main game: Player killed")
+            for shark in gameParams.enemies:
+                if shark.rect.colliderect(gameParams.player.rect):
+                    shark.kill()
+                    coin_sound.play()
 
-                # Stop any moving sounds and play the collision sound
-                move_up_sound.stop()
-                move_down_sound.stop()
-                collision_sound.play()
 
-                # Stop the loop
-                gamestate = 'gameover'
-                print("Main game: Stopping main loop. Going to gamestate: " + gamestate)
+
+          #  if pygame.sprite.spritecollideany(gameParams.player, gameParams.enemies):
+
+                # # If so, remove the player
+                # gameParams.player.kill()
+                # print("Main game: Player killed")
+                #
+                # # Stop any moving sounds and play the collision sound
+                # move_up_sound.stop()
+                # move_down_sound.stop()
+                # collision_sound.play()
+                #
+                # # Stop the loop
+                # gamestate = 'gameover'
+                # print("Main game: Stopping main loop. Going to gamestate: " + gamestate)
 
             return gamestate
 
@@ -399,11 +407,13 @@ if __name__ == '__main__':
         move_up_sound = pygame.mixer.Sound(path + "bubbles.wav")
         move_down_sound = pygame.mixer.Sound(path + "bubbles.wav")
         collision_sound = pygame.mixer.Sound(path + "Collision.ogg")
+        coin_sound = pygame.mixer.Sound(path + "coin.wav")
 
         # Set the base volume for all sounds
         move_up_sound.set_volume(0.2)
         move_down_sound.set_volume(0.2)
         collision_sound.set_volume(0.5)
+        coin_sound.set_volume(0.5)
 
         gamestate, gameParams, mainGame_background = startANewGame()
         scoreboard = Scoreboard()
