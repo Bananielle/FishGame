@@ -41,6 +41,10 @@ if __name__ == '__main__':
         SCREEN_WIDTH = 1000
         SCREEN_HEIGHT = 800
 
+        # Colours
+        GOLD = (255, 184, 28)
+        PINK = (170,22,166)
+
         # Define the Player object extending pygame.sprite.Sprite
         # Instead of a surface, we use an image for a better looking sprite
         class Player(pygame.sprite.Sprite):
@@ -112,7 +116,11 @@ if __name__ == '__main__':
                 self.gameTimeCounter = 0
                 self.counterText = str('0').rjust(3)
                 self.font = pygame.font.SysFont('herculanum', 35, bold=True, )
-                self.gameCounterText = self.font.render(self.counterText, True, (255, 184, 28))
+                self.gameTimeCounterText = self.font.render(self.counterText, True, PINK)
+
+
+                self.nrSharksCollected = 0
+                self.nrSharksCollectedText = self.font.render(self.counterText, True, GOLD)
 
                 self.scoreSaved = False
 
@@ -147,16 +155,16 @@ if __name__ == '__main__':
                     gameParams.scoreSaved = True  # This will reset when the player goes back to the start screen
                     print('Score ', score, ' saved to score list. Is now: ', str(self.scoresList))
 
-            def makeFont(self, string):
-                text = self.font.render(string, True, (170,22,166))
+            def makePinkFont(self, string):
+                text = self.font.render(string, True, PINK) # Pink colour
                 return text
 
             def displayScoreboard(self):
 
-                scoreboard = self.makeFont('Scoreboard')
+                scoreboard = self.makePinkFont('Scoreboard')
                 screen.blit(scoreboard, ((SCREEN_WIDTH / 2) - (SCREEN_WIDTH * 0.11), (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT * 0.40)))
 
-                currentScoreFound = False
+                currentScoreAlreadyDisplayed = False
                 newPosition = 30
                 count = 1
                 sortedScores = sorted(self.scoresList, reverse=True)
@@ -164,13 +172,13 @@ if __name__ == '__main__':
                 # Put each score on the screen in descending order
                 for score in sortedScores:
                     count_str = str(count) + '.'
-                    if score == gameParams.gameTimeCounter and not currentScoreFound: # Colour the currently achieved score red
-                        scores_text = self.font.render(str(score) + ' seconds', True, (255, 184, 28))
-                        count_text = self.font.render(count_str, True, (255, 184, 28))
-                        currentScoreFound = True
+                    if score == gameParams.nrSharksCollected and not currentScoreAlreadyDisplayed: # Colour the currently achieved score GOLD
+                        scores_text = self.font.render(str(score) + ' sharks', True, GOLD)
+                        count_text = self.font.render(count_str, True, GOLD)
+                        currentScoreAlreadyDisplayed = True
                     else:
-                        scores_text = self.makeFont(str(score) + ' seconds')
-                        count_text = self.makeFont(count_str)
+                        scores_text = self.makePinkFont(str(score) + ' sharks')
+                        count_text = self.makePinkFont(count_str)
 
                     # Put score on screen
                     screen.blit(count_text,
@@ -212,15 +220,6 @@ if __name__ == '__main__':
             mainGame_background.updateBackGrounds()
             displaySeaBackgroundsOnScreen()
 
-            # mainGame_background.updateBackGrounds()
-            #
-            # screen.fill((0, 0, 0))  # black
-            # screen.blit(mainGame_background.background_far, [mainGame_background.bgX_far, 0])
-            # screen.blit(mainGame_background.background_far, [mainGame_background.bgX2_far, 0])
-            # screen.blit(mainGame_background.background_middle, [mainGame_background.bgX_middle, 20])
-            # screen.blit(mainGame_background.background_middle, [mainGame_background.bgX2_middle, 20])
-            # screen.blit(mainGame_background.background_foreground, [mainGame_background.bgX_foreground, 40])
-            # screen.blit(mainGame_background.background_foreground, [mainGame_background.bgX2_foreground, 40])
 
             for event in pygame.event.get():
                 # Did the user hit a key?
@@ -228,11 +227,16 @@ if __name__ == '__main__':
 
                 # Show the player how much time as passed
                 if event.type == pygame.USEREVENT:
-                    gameParams.gameTimeCounter += 1
-                    text = str(gameParams.gameTimeCounter).rjust(3)
-                    gameParams.gameCounterText = gameParams.font.render(text, True, (255, 184, 28))
+                    if (gameParams.gameTimeCounter > 5):
+                        gamestate = 'gameover'
+                        gameParams.player.kill()
+                    else:
+                        gameParams.gameTimeCounter += 1
+                        text = str(gameParams.gameTimeCounter).rjust(3)
+                        gameParams.gameTimeCounterText = scoreboard.makePinkFont(text)
+                        print(text)
 
-                    print(text)
+
 
                 gamestate = didPlayerPressQuit(gamestate, event)
 
@@ -274,17 +278,24 @@ if __name__ == '__main__':
 
             # print("check4")
 
-            # Draw counter text
-            screen.blit(gameParams.gameCounterText, (SCREEN_WIDTH - 70, 20))
 
             # Check if any enemies have collided with the player
             for shark in gameParams.enemies:
                 if shark.rect.colliderect(gameParams.player.rect):
                     shark.kill()
                     coin_sound.play()
+                    gameParams.nrSharksCollected += 1
+                    # Show the player how much coins have been collected
+                    text = str(gameParams.nrSharksCollected).rjust(3)
+                    gameParams.nrSharksCollectedText = gameParams.font.render(text, True, GOLD)
+
+            # Draw game time counter text
+            screen.blit(gameParams.gameTimeCounterText, (SCREEN_WIDTH - 70, 20))
+            screen.blit(gameParams.nrSharksCollectedText, (SCREEN_WIDTH - 70, 50))
 
 
 
+        # OLD: Sharks killing player instead of acting as coins
           #  if pygame.sprite.spritecollideany(gameParams.player, gameParams.enemies):
 
                 # # If so, remove the player
@@ -325,6 +336,8 @@ if __name__ == '__main__':
             return gamestate
 
         def runGameOver():
+
+
             gamestate = 'gameover'
             gameover = GameOver(path, SCREEN_WIDTH, SCREEN_HEIGHT)
             replay = PressSpaceToReplay(path, SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -332,7 +345,7 @@ if __name__ == '__main__':
             screen.blit(replay.surf, replay.surf_center)
 
             # Save the score for the player
-            scoreboard.addScoretoScoreBoard(gameParams.gameTimeCounter)
+            scoreboard.addScoretoScoreBoard(gameParams.nrSharksCollected)
 
             for event in pygame.event.get():
 
