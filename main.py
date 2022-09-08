@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     def run():
 
-        path = "/Users/danielle/PycharmProjects/FishGame/sounds_pics/"
+        PATH = "/Users/danielle/PycharmProjects/FishGame/sounds_pics/"
 
         # Import pygame.locals for easier access to key coordinates. Updated to conform to flake8 and black standards
         from pygame.locals import (
@@ -45,12 +45,25 @@ if __name__ == '__main__':
         GOLD = (255, 184, 28)
         PINK = (170,22,166)
 
+        # Used to cycle through different game states with a statemachine
+        class GameStates:
+            STARTSCREEN = 'StartScreen'
+            STARTNEWGAME = 'StartNewGame'
+            MAINGAME = 'MainGame'
+            GAMEOVER = 'GameOver'
+            SCOREBOARD = 'Scoreboard'
+            QUITGAME = 'QuitGame'
+
+            def setGameState(self,gamestate):
+                print('Going to state: ' + gamestate)
+                return gamestate
+
         # Define the Player object extending pygame.sprite.Sprite
         # Instead of a surface, we use an image for a better looking sprite
         class Player(pygame.sprite.Sprite):
             def __init__(self):
                 super(Player, self).__init__()
-                self.surf = pygame.image.load(path + "fish.png").convert()
+                self.surf = pygame.image.load(PATH + "fish.png").convert()
                 self.surf.set_colorkey((0, 0, 0), RLEACCEL)
                 self.rect = self.surf.get_rect(center=(
                         random.randint(20, 60),
@@ -61,10 +74,10 @@ if __name__ == '__main__':
             def update(self, pressed_keys):
                 if pressed_keys[K_UP]:
                     self.rect.move_ip(0, -10)
-                    channel1.play(move_up_sound)
+                    soundSystem.channel1.play(soundSystem.move_up_sound)
                 if pressed_keys[K_DOWN]:
                     self.rect.move_ip(0, 10)
-                    channel1.play(move_up_sound)
+                    soundSystem.channel1.play(soundSystem.move_up_sound)
                 if pressed_keys[K_LEFT]:
                     self.rect.move_ip(-10, 0)
                 if pressed_keys[K_RIGHT]:
@@ -85,7 +98,7 @@ if __name__ == '__main__':
         class Enemy(pygame.sprite.Sprite):
             def __init__(self):
                 super(Enemy, self).__init__()
-                self.surf = pygame.image.load(path + "shark.png").convert()
+                self.surf = pygame.image.load(PATH + "shark.png").convert()
                 self.surf.set_colorkey((0, 0, 0), RLEACCEL)
                 # The starting position is randomly generated, as is the speed
                 self.rect = self.surf.get_rect(
@@ -107,6 +120,7 @@ if __name__ == '__main__':
                 self.rect.move_ip(-self.speed, 0)
                 if self.rect.right < 0:
                     self.kill()
+
 
         class GameParameters():
             def __init__(self):
@@ -208,17 +222,16 @@ if __name__ == '__main__':
 
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    gamestate = 'quitgame'
-                    print('Going to state: ' + gamestate)
+                    gamestate = GameState.setGameState(GameState.QUITGAME)
 
-            elif event.type == pygame.QUIT:
-                gamestate = 'quitgame'
-                print('Going to state: ' + gamestate)
+            if event.type == pygame.QUIT:
+                gamestate = GameState.setGameState(GameState.QUITGAME)
+
 
             return gamestate
 
         def runMainGame():
-            gamestate = 'mainloop'
+            gamestate = GameState.MAINGAME
 
             mainGame_background.updateBackGrounds()
             displaySeaBackgroundsOnScreen()
@@ -233,7 +246,7 @@ if __name__ == '__main__':
                 # Show the player how much time as passed
                 if event.type == pygame.USEREVENT:
                     if (gameParams.gameTimeCounter == 0):
-                        gamestate = 'gameover'
+                        gamestate = GameState.GAMEOVER
                         gameParams.player.kill()
                     else:
                         gameParams.gameTimeCounter -= 1
@@ -288,7 +301,7 @@ if __name__ == '__main__':
             for shark in gameParams.enemies:
                 if shark.rect.colliderect(gameParams.player.rect):
                     shark.kill()
-                    coin_sound.play()
+                    soundSystem.coin_sound.play()
                     gameParams.nrSharksCollected += 1
                     # Show the player how much coins have been collected
                     text =  str(gameParams.nrSharksCollected).rjust(3)
@@ -298,28 +311,10 @@ if __name__ == '__main__':
             screen.blit(gameParams.gameTimeCounterText, (SCREEN_WIDTH - 70, 20))
             screen.blit(gameParams.nrSharksCollectedText, (SCREEN_WIDTH - 70, 50))
 
-
-
-        # OLD: Sharks killing player instead of acting as coins
-          #  if pygame.sprite.spritecollideany(gameParams.player, gameParams.enemies):
-
-                # # If so, remove the player
-                # gameParams.player.kill()
-                # print("Main game: Player killed")
-                #
-                # # Stop any moving sounds and play the collision sound
-                # move_up_sound.stop()
-                # move_down_sound.stop()
-                # collision_sound.play()
-                #
-                # # Stop the loop
-                # gamestate = 'gameover'
-                # print("Main game: Stopping main loop. Going to gamestate: " + gamestate)
-
             return gamestate
 
         def runStartScreen():
-            gamestate = 'startscreen'
+            gamestate = GameState.STARTSCREEN
             screen.fill([0, 0, 0])  # Set black background
             startscreen = StartScreen()
             fish = Fish()
@@ -333,19 +328,17 @@ if __name__ == '__main__':
                     # If space to start
                     if event.key == K_SPACE:
                         startscreen.kill()
-                        gamestate = 'startNewGame'
-                        print('Going to state: ' + gamestate)
+                        gamestate = GameState.setGameState(GameState.STARTNEWGAME)
+
 
                     gamestate = didPlayerPressQuit(gamestate, event)
 
             return gamestate
 
         def runGameOver():
-
-
-            gamestate = 'gameover'
-            gameover = GameOver(path, SCREEN_WIDTH, SCREEN_HEIGHT)
-            replay = PressSpaceToReplay(path, SCREEN_WIDTH, SCREEN_HEIGHT)
+            gamestate = GameState.GAMEOVER
+            gameover = GameOver(PATH, SCREEN_WIDTH, SCREEN_HEIGHT)
+            replay = PressSpaceToReplay(PATH, SCREEN_WIDTH, SCREEN_HEIGHT)
             screen.blit(gameover.surf, gameover.surf_center)
             screen.blit(replay.surf, replay.surf_center)
 
@@ -357,8 +350,7 @@ if __name__ == '__main__':
                 if event.type == KEYDOWN:
 
                     if event.key == K_SPACE:
-                        gamestate = 'scoreboard'
-                        print('Going to state: ' + gamestate)
+                        gamestate = GameState.setGameState(GameState.SCOREBOARD)
 
                         # Reset game parameters if you want to restart a game
                         gameParams.reset()
@@ -368,10 +360,10 @@ if __name__ == '__main__':
             return gamestate
 
         def runScoreboard():
-            gamestate = 'scoreboard'
+            gamestate = GameState.SCOREBOARD
 
             displaySeaBackgroundsOnScreen()
-            replay = PressSpaceToReplay(path, SCREEN_WIDTH, SCREEN_HEIGHT)
+            replay = PressSpaceToReplay(PATH, SCREEN_WIDTH, SCREEN_HEIGHT)
             screen.blit(replay.surf, replay.surf_center)
             scoreboard.displayScoreboard()
 
@@ -379,11 +371,7 @@ if __name__ == '__main__':
                 if event.type == KEYDOWN:
 
                     if event.key == K_SPACE:
-                        gamestate = 'startscreen'
-                        print('Going to state: ' + gamestate)
-
-
-                        gameParams.reset() # Reset game parameters if you want to restart a game
+                        gamestate = GameState.setGameState(GameState.STARTSCREEN)
 
 
                 gamestate = didPlayerPressQuit(gamestate, event)
@@ -392,10 +380,14 @@ if __name__ == '__main__':
 
         def startANewGame():
             print('Starting a new game.')
-            gamestate = 'mainloop'
-            print('Going to state: ' + gamestate)
+            gamestate = GameState.setGameState(GameState.MAINGAME)
 
-            return gamestate, GameParameters(), MainGame_background()  # Reinitialize game parameters and background
+            gameParameters = GameParameters()
+            mainGameBackGround = MainGame_background()
+
+            return gamestate, gameParameters, mainGameBackGround # Reinitialize game parameters and background
+
+
 
         # INITIALIZE MAIN GAME SCREEN
 
@@ -412,58 +404,57 @@ if __name__ == '__main__':
                                           SCREEN_HEIGHT),
                                          SURFACE)  # Create the screen object. The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
 
-        # Load and play our background music
-        # Sound source: http://ccmixter.org/files/Apoxode/59262
-        # License: https://creativecommons.org/licenses/by/3.0/
-        # pygame.mixer.music.load("Apoxode_-_Electric_1.mp3")
-        # pygame.mixer.music.play(loops=-1)
+        # Set up the sounds
+        class SoundSystem():
+            def __init__(self):
+                # create separate Channel objects for simultaneous playback (or to make sure only 1 sound is playing at a time)
+                self.channel1 = pygame.mixer.Channel(0)  # argument must be int
+                # Load all our sound files (Sound sources: Jon Fincher)
+                self.move_up_sound = pygame.mixer.Sound(PATH + "bubbles.wav")
+                self.move_down_sound = pygame.mixer.Sound(PATH + "bubbles.wav")
+                self.collision_sound = pygame.mixer.Sound(PATH + "Collision.ogg")
+                self.coin_sound = pygame.mixer.Sound(PATH + "coin.wav")
 
-        # create separate Channel objects for simultaneous playback (or to make sure only 1 sound is playing at a time)
-        channel1 = pygame.mixer.Channel(0)  # argument must be int
+                # Set the base volume for all sounds
+                self.move_up_sound.set_volume(0.2)
+                self.move_down_sound.set_volume(0.2)
+                self.collision_sound.set_volume(0.5)
+                self.coin_sound.set_volume(0.2)
 
-        # Load all our sound files (Sound sources: Jon Fincher)
-        move_up_sound = pygame.mixer.Sound(path + "bubbles.wav")
-        move_down_sound = pygame.mixer.Sound(path + "bubbles.wav")
-        collision_sound = pygame.mixer.Sound(path + "Collision.ogg")
-        coin_sound = pygame.mixer.Sound(path + "coin.wav")
+        soundSystem = SoundSystem()
 
-        # Set the base volume for all sounds
-        move_up_sound.set_volume(0.2)
-        move_down_sound.set_volume(0.2)
-        collision_sound.set_volume(0.5)
-        coin_sound.set_volume(0.5)
+        GameState = GameStates() # Create game states to cycle through
+        gamestate, gameParams, mainGame_background = startANewGame() # Set up a new game (will be refreshed after every replay)
+        scoreboard = Scoreboard() # Make a scoreboard (will remain throughout the game)
 
-        gamestate, gameParams, mainGame_background = startANewGame()
-        scoreboard = Scoreboard()
 
-        # START OF A NEW GAME (needs to happen every time a new game is started)
-
-        # ========== GAME STATES ==============
-        gamestate = 'startscreen'
+        # ========== GAME STATE MACHINE ==============
+        gamestate = GameState.STARTSCREEN
         run = True
         while run:
 
-            if gamestate == 'startscreen':
+            if gamestate == GameState.STARTSCREEN:
                 gamestate = runStartScreen()
 
-            if gamestate == 'startNewGame':
+            if gamestate == GameState.STARTNEWGAME:
                 gamestate, gameParams, mainGame_background = startANewGame()
 
-            elif gamestate == 'mainloop':
+            elif gamestate == GameState.MAINGAME:
                 gamestate = runMainGame()
 
-            elif gamestate == 'gameover':
+            elif gamestate == GameState.GAMEOVER:
                 gamestate = runGameOver()
 
-            elif gamestate == 'scoreboard':
+            elif gamestate == GameState.SCOREBOARD:
                 gamestate = runScoreboard()
 
-            elif gamestate == 'quitgame':
-                run = False
+            elif gamestate == GameState.QUITGAME:
+                run = False # quit the while loop
 
             # Ensure we maintain a 30 frames per second rate
             clock.tick(50)
             pygame.display.flip()
+
 
         # ====== QUIT GAME =======
         pygame.mixer.music.stop()
