@@ -1,35 +1,22 @@
 import pygame
 
-# Import pygame.locals for easier access to key coordinates
-# Updated to conform to flake8 and black standards
-# from pygame.locals import *
-from pygame.locals import (
-    RLEACCEL,
-)
-
-path = "/Users/danielle/Documents/"
-# Define constants for the screen width and height
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 800
-
-
 class MainGame_background(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, SCREEN_WIDTH,SCREEN_HEIGHT,PATH):
         super(MainGame_background, self).__init__()
-        self.background_far = pygame.image.load(path + 'far.png')
+        self.background_far = pygame.image.load(PATH + 'far.png')
         self.background_far = pygame.transform.scale(self.background_far,
                                                      (SCREEN_WIDTH, self.background_far.get_height() * 3))
         self.bgX_far = 0
         self.bgX2_far = self.background_far.get_width()
 
-        self.background_middle = pygame.image.load(path + 'sand.png')
-        self.background_middle = pygame.transform.scale(self.background_middle, (SCREEN_WIDTH, SCREEN_HEIGHT - 180))
+        self.background_middle = pygame.image.load(PATH + 'sand.png')
+        self.background_middle = pygame.transform.scale(self.background_middle, (SCREEN_WIDTH, SCREEN_HEIGHT - (SCREEN_HEIGHT/9)))
         self.bgX_middle = 0
         self.bgX2_middle = self.background_middle.get_width()
 
-        self.background_foreground = pygame.image.load(path + 'foreground-merged.png')
+        self.background_foreground = pygame.image.load(PATH + 'foreground-merged.png')
         self.background_foreground = pygame.transform.scale(self.background_foreground,
-                                                            (SCREEN_WIDTH + 500, SCREEN_HEIGHT - 160))
+                                                            (SCREEN_WIDTH + (SCREEN_WIDTH/2), SCREEN_HEIGHT ))
         self.bgX_foreground = 0
         self.bgX2_foreground = self.background_foreground.get_width()
 
