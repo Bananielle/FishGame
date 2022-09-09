@@ -296,7 +296,7 @@ if __name__ == '__main__':
     # Screen
     SURFACE = pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE
     # Create the screen object. The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
-    screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT),pygame.FULLSCREEN) # WARNING: WITH fullscreen using an external screen may cause problems
+    screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT),pygame.FULLSCREEN) # WARNING: WITH fullscreen using an external screen may cause problems (tip: it helps if you don't have pycharm in fullscreen already)
 
     # Setup sounds
     pygame.mixer.init()  # Setup for sounds, defaults are good
