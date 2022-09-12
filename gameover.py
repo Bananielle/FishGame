@@ -28,7 +28,7 @@ class Picture():
             (SCREEN_HEIGHT - self.surf.get_height()) / y
         )
 
-        gameover_image = pygame.image.load(path + '"gameover.png"').convert_alpha()
+        gameover_image = pygame.image.load("gameover.png").convert_alpha()
         gameover_image.set_colorkey((0, 0, 0), RLEACCEL)
         gameover_image.location = (
             (SCREEN_WIDTH - gameover_image.get_width()) / 2,
@@ -38,7 +38,7 @@ class Picture():
 class GameOver(pygame.sprite.Sprite):
     def __init__(self,path,SCREEN_WIDTH,SCREEN_HEIGHT):
         super(GameOver, self).__init__()
-        self.surf = pygame.image.load(path + "gameover.png").convert()
+        self.surf = pygame.image.load("gameover.png").convert()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         self.rect = self.surf.get_rect()
 
@@ -52,7 +52,7 @@ class GameOver(pygame.sprite.Sprite):
 class PressSpaceToReplay(pygame.sprite.Sprite):
     def __init__(self,path,SCREEN_WIDTH,SCREEN_HEIGHT):
         super(PressSpaceToReplay, self).__init__()
-        self.surf = pygame.image.load(path + "replay.png").convert_alpha()
+        self.surf = pygame.image.load("replay.png").convert_alpha()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         self.rect = self.surf.get_rect()
 

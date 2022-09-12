@@ -6,10 +6,10 @@ class SoundSystem():
         # create separate Channel objects for simultaneous playback (or to make sure only 1 sound is playing at a time)
         self.channel1 = pygame.mixer.Channel(0)  # argument must be int
         # Load all our sound files (Sound sources: Jon Fincher)
-        self.move_up_sound = pygame.mixer.Sound(PATH + "bubbles.wav")
-        self.move_down_sound = pygame.mixer.Sound(PATH + "bubbles.wav")
-        self.collision_sound = pygame.mixer.Sound(PATH + "Collision.ogg")
-        self.coin_sound = pygame.mixer.Sound(PATH + "coin.wav")
+        self.move_up_sound = pygame.mixer.Sound("bubbles.wav")
+        self.move_down_sound = pygame.mixer.Sound("bubbles.wav")
+        self.collision_sound = pygame.mixer.Sound("Collision.ogg")
+        self.coin_sound = pygame.mixer.Sound("coin.wav")
 
         # Set the base volume for all sounds
         self.move_up_sound.set_volume(0.2)

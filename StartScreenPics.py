@@ -13,7 +13,7 @@ class PressSpace(pygame.sprite.Sprite):
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.PATH = PATH
-        self.surf = pygame.image.load(self.PATH + "press_space.png").convert()
+        self.surf = pygame.image.load("press_space.png").convert()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         self.rect = self.surf.get_rect()
 
@@ -30,7 +30,7 @@ class Fish(pygame.sprite.Sprite):
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.PATH = PATH
-        self.surf = pygame.image.load(self.PATH + "bigfish.png").convert()
+        self.surf = pygame.image.load("bigfish.png").convert()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         self.rect = self.surf.get_rect()
 
@@ -47,7 +47,7 @@ class FishAdventure(pygame.sprite.Sprite):
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.PATH = PATH
-        self.surf = pygame.image.load(self.PATH + "fish_adventure.png").convert_alpha()
+        self.surf = pygame.image.load("fish_adventure.png").convert_alpha()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         self.rect = self.surf.get_rect()
 

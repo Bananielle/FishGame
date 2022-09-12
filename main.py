@@ -37,7 +37,7 @@ if __name__ == '__main__':
         QUIT,
     )
 
-    PATH = "/Users/danielle/PycharmProjects/FishGame/sounds_pics/"
+    PATH = ' '
 
     # Colours
     GOLD = (255, 184, 28)
