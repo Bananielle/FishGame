@@ -5,7 +5,7 @@ from pygame.locals import (
     K_DOWN,
 
 )
-class BrainInput():
+class BCI():
     def __init__(self):
         self.currentInput = 0
         self.previousInput = 0

@@ -5,7 +5,7 @@
 
 import pygame, random
 
-from BCI import BrainInput
+from BCI import BCI
 from GameParameters import GameParameters
 from SeaBackground import MainGame_background
 from Sharks import Shark
@@ -187,13 +187,10 @@ if __name__ == '__main__':
                     print('Main game: Difficulty updated. Minspeed = ', gameParams.maxSpeed, ', maxspeed = ',
                           gameParams.minSpeed)
 
-        # Brain input
-        brainKeypress = getBraininput()
-
-        # print("check2")
-        # Get the set of keys pressed and check for user input
-        pressed_keys = pygame.key.get_pressed()
-        gameParams.player.update(pressed_keys,brainKeypress,gameParams.useBCIinput)
+        # Get user input
+        keyboard_input = pygame.key.get_pressed() # Get the set of keyboard keys pressed from user
+        BCI_input = BCI.getKeyboardPressFromBrainInput()  # Check for BCI-based keyboard presses
+        gameParams.player.update(keyboard_input,BCI_input,gameParams.useBCIinput)
 
         # Update the position of our enemies and clouds
         gameParams.enemies.update()
@@ -313,7 +310,7 @@ if __name__ == '__main__':
     pygame.mixer.init()  # Setup for sounds, defaults are good
     soundSystem = SoundSystem(PATH)
 
-    brainInput = BrainInput()
+    BCI = BCI()
 
     # Set up gamestates to cycle through in main loop
     GameState = GameStates()
