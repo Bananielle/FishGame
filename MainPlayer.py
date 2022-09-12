@@ -31,17 +31,24 @@ class MainPlayer(pygame.sprite.Sprite):
         self.playerSpeed = 15
 
     # Move the sprite based on keypresses
-    def update(self, pressed_keys):
+    def update(self, pressed_keys,brainKeyPress, useBCIinput):
+
+        # Also allow for BCI input to make player move up and down if True
+        if useBCIinput:
+            if brainKeyPress == K_UP:
+                self.moveUp()
+            if brainKeyPress == K_DOWN:
+                self.moveDown()
+
+        # Actual keyboard presses
         if pressed_keys[K_UP]:
-            self.rect.move_ip(0, self.playerSpeed*-1)
-            self.soundSystem.channel1.play(self.soundSystem.move_up_sound)
+            self.moveUp()
         if pressed_keys[K_DOWN]:
-            self.rect.move_ip(0, self.playerSpeed)
-            self.soundSystem.channel1.play(self.soundSystem.move_up_sound)
+            self.moveDown()
         if pressed_keys[K_LEFT]:
-            self.rect.move_ip(self.playerSpeed*-1, 0)
+            self.moveLeft()
         if pressed_keys[K_RIGHT]:
-            self.rect.move_ip(self.playerSpeed, 0)
+            self.moveRight()
 
         # Keep player on the screen
         if self.rect.left < 0:
@@ -52,3 +59,18 @@ class MainPlayer(pygame.sprite.Sprite):
             self.rect.top = 0
         elif self.rect.bottom >= self.SCREEN_HEIGHT:
             self.rect.bottom = self.SCREEN_HEIGHT
+
+
+    def moveUp(self):
+        self.rect.move_ip(0, self.playerSpeed * -1)
+        self.soundSystem.channel1.play(self.soundSystem.move_up_sound)
+
+    def moveDown(self):
+        self.rect.move_ip(0, self.playerSpeed)
+        self.soundSystem.channel1.play(self.soundSystem.move_up_sound)
+
+    def moveLeft(self):
+        self.rect.move_ip(self.playerSpeed * -1, 0)
+
+    def moveRight(self):
+        self.rect.move_ip(self.playerSpeed, 0)

@@ -12,7 +12,8 @@ class GameParameters():
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.PATH = PATH
 
-        self.gameTimeCounter_s = 10 # How long you want to one game run to last (in seconds)
+        self.gameTimeCounter_s = 20 # How long you want to one game run to last (in seconds)
+        self.useBCIinput = True # If true, then player will be controlled by BCI input instead of keyboard presses
 
         self.difficultyCounter = 0
         self.maxSpeed = 10

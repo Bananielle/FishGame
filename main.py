@@ -5,6 +5,7 @@
 
 import pygame, random
 
+from BCI import BrainInput
 from GameParameters import GameParameters
 from SeaBackground import MainGame_background
 from Sharks import Shark
@@ -41,6 +42,13 @@ if __name__ == '__main__':
     # Colours
     GOLD = (255, 184, 28)
     PINK = (170,22,166)
+
+    # Brain input variables
+    fakeBrainInput =0
+
+    def getBrainInput(fakeBrainInput):
+         fakeBrainInput += 1
+         return fakeBrainInput
 
     # Used to cycle through different game states with a statemachine
     class GameStates:
@@ -179,10 +187,13 @@ if __name__ == '__main__':
                     print('Main game: Difficulty updated. Minspeed = ', gameParams.maxSpeed, ', maxspeed = ',
                           gameParams.minSpeed)
 
+        # Brain input
+        brainKeypress = getBraininput()
+
         # print("check2")
         # Get the set of keys pressed and check for user input
         pressed_keys = pygame.key.get_pressed()
-        gameParams.player.update(pressed_keys)
+        gameParams.player.update(pressed_keys,brainKeypress,gameParams.useBCIinput)
 
         # Update the position of our enemies and clouds
         gameParams.enemies.update()
@@ -302,6 +313,8 @@ if __name__ == '__main__':
     pygame.mixer.init()  # Setup for sounds, defaults are good
     soundSystem = SoundSystem(PATH)
 
+    brainInput = BrainInput()
+
     # Set up gamestates to cycle through in main loop
     GameState = GameStates()
 
@@ -336,7 +349,7 @@ if __name__ == '__main__':
             run = False # quit the while loop
 
         # Ensure we maintain a 30 frames per second rate
-        clock.tick(50)
+        clock.tick(60)
         pygame.display.flip()
 
 
