@@ -3,8 +3,7 @@
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 
-import pygame, random
-
+import pygame, random, expyriment, os
 from BCI import BCI
 from GameParameters import GameParameters
 from SeaBackground import MainGame_background
@@ -24,6 +23,8 @@ def print_hi(name):
 if __name__ == '__main__':
     print_hi('Starting up fish game...')
 
+    print(os.getcwd())
+
     # Import pygame.locals for easier access to key coordinates. Updated to conform to flake8 and black standards
     from pygame.locals import (
         RLEACCEL,
@@ -37,7 +38,10 @@ if __name__ == '__main__':
         QUIT,
     )
 
-    PATH = ' '
+    expyriment.show_documentation()
+
+    PATH = os.getcwd() + '/'
+
 
     # Colours
     GOLD = (255, 184, 28)
@@ -308,6 +312,7 @@ if __name__ == '__main__':
 
     # Setup sounds
     pygame.mixer.init()  # Setup for sounds, defaults are good
+
     soundSystem = SoundSystem(PATH)
 
     BCI = BCI()

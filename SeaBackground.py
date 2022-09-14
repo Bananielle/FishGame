@@ -10,13 +10,13 @@ class MainGame_background(pygame.sprite.Sprite):
         self.bgX2_far = self.background_far.get_width()
 
         self.background_middle = pygame.image.load('sand.png')
-        self.background_middle = pygame.transform.scale(self.background_middle, (SCREEN_WIDTH, SCREEN_HEIGHT - (SCREEN_HEIGHT/9)))
+        self.background_middle = pygame.transform.scale(self.background_middle, (SCREEN_WIDTH, SCREEN_HEIGHT - int((SCREEN_HEIGHT/9)))) # Make sure it's an integer because the fucntion doesn't accept floats
         self.bgX_middle = 0
         self.bgX2_middle = self.background_middle.get_width()
 
         self.background_foreground = pygame.image.load('foreground-merged.png')
         self.background_foreground = pygame.transform.scale(self.background_foreground,
-                                                            (SCREEN_WIDTH + (SCREEN_WIDTH/2), SCREEN_HEIGHT ))
+                                                            (SCREEN_WIDTH + (int(SCREEN_WIDTH/2)), SCREEN_HEIGHT )) # Make sure this is an integer, because it doesn't accept floats
         self.bgX_foreground = 0
         self.bgX2_foreground = self.background_foreground.get_width()
 

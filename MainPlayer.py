@@ -63,11 +63,11 @@ class MainPlayer(pygame.sprite.Sprite):
 
     def moveUp(self):
         self.rect.move_ip(0, self.playerSpeed * -1)
-        self.soundSystem.channel1.play(self.soundSystem.move_up_sound)
+        self.soundSystem.playBubbleSound(self.soundSystem.move_up_sound)
 
     def moveDown(self):
         self.rect.move_ip(0, self.playerSpeed)
-        self.soundSystem.channel1.play(self.soundSystem.move_up_sound)
+        self.soundSystem.playBubbleSound(self.soundSystem.move_down_sound)
 
     def moveLeft(self):
         self.rect.move_ip(self.playerSpeed * -1, 0)

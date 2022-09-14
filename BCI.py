@@ -14,7 +14,7 @@ class BCI():
     # Put value retrieved from Turbo-Satori here
     def getCurrentInput(self):
 
-        input = 0  # random.randint(20, 60)
+        input =0#   random.randint(20, 60)
 
         return input
 
