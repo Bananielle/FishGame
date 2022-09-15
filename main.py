@@ -3,7 +3,7 @@
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 
-import pygame, random, expyriment, os
+import pygame, random, os
 from BCI import BCI
 from GameParameters import GameParameters
 from SeaBackground import MainGame_background
@@ -25,6 +25,7 @@ if __name__ == '__main__':
 
     print(os.getcwd())
 
+
     # Import pygame.locals for easier access to key coordinates. Updated to conform to flake8 and black standards
     from pygame.locals import (
         RLEACCEL,
@@ -38,7 +39,6 @@ if __name__ == '__main__':
         QUIT,
     )
 
-    expyriment.show_documentation()
 
     PATH = os.getcwd() + '/'
 
