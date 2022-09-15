@@ -19,7 +19,7 @@ from pygame.locals import (
 class MainPlayer(pygame.sprite.Sprite):
     def __init__(self,SCREEN_WIDTH, SCREEN_HEIGHT, PATH, soundSystem):
         super(MainPlayer, self).__init__()
-        self.surf = pygame.image.load("fish.png").convert()
+        self.surf = pygame.image.load("Resources/fish.png").convert()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         self.surf = pygame.transform.scale(self.surf, (self.surf.get_width() * 2,self.surf.get_height() * 2)) # But this greatly reduces the image quality...
         self.rect = self.surf.get_rect(center=(

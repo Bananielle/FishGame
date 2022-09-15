@@ -1,5 +1,6 @@
 
-import  simpleaudio
+import os, simpleaudio
+
 # Use a different module for sounds, because the pygame soundsystem didn't work together with  python 2.7.5.
 # (which was needed for exypriment...)
 
@@ -7,10 +8,10 @@ import  simpleaudio
 class SoundSystem():
     def __init__(self,PATH):
 
-        self.move_up_sound = simpleaudio.WaveObject.from_wave_file("bubbles.wav")
-        self.move_down_sound = simpleaudio.WaveObject.from_wave_file("bubbles.wav")
+        self.move_up_sound = simpleaudio.WaveObject.from_wave_file("Resources/bubbles.wav")
+        self.move_down_sound = simpleaudio.WaveObject.from_wave_file("Resources/bubbles.wav")
      #  self.collision_sound = pygame.mixer.Sound("Collision.ogg")
-        self.coin_sound = simpleaudio.WaveObject.from_wave_file("coin.wav")
+        self.coin_sound = simpleaudio.WaveObject.from_wave_file("Resources/coin.wav")
         self.playingBubbleSound = self.move_up_sound.play()
 
 
