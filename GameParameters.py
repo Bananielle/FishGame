@@ -29,14 +29,19 @@ class GameParameters():
 
         self.scoreSaved = False
 
-        # Create custom events for adding a new enemy and cloud
+        # Create custom events for adding a new sharks
         self.ADDSHARK = pygame.USEREVENT + 1
         pygame.time.set_timer(self.ADDSHARK, 400)
+
+        # Create custom events for adding a new sharks
+        self.ADDJELLYFISH = pygame.USEREVENT + 2
+        pygame.time.set_timer(self.ADDJELLYFISH, 4000)
 
         # Create the sprites
         self.player = player
         print('Player created')
-        self.enemies = pygame.sprite.Group()  # - enemies is used for collision detection and position updates
+        self.sharks = pygame.sprite.Group()  # - sharks is used for collision detection and position updates
+        self.jellyfish = pygame.sprite.Group()  # - enemies is used for collision detection and position updates
         self.all_sprites = pygame.sprite.Group()  # - all_sprites isused for rendering
         self.all_sprites.add(self.player)
 

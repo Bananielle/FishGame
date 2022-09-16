@@ -6,6 +6,7 @@
 import pygame, random, os
 from BCI import BCI
 from GameParameters import GameParameters
+from Jellyfish import Jellyfish
 from SeaBackground import MainGame_background
 from Sharks import Shark
 from SoundSystem import SoundSystem
@@ -96,11 +97,11 @@ if __name__ == '__main__':
             for score in sortedScores:
                 count_str = str(count) + '.'
                 if score == gameParams.nrSharksCollected and not currentScoreAlreadyDisplayed: # Colour the currently achieved score GOLD
-                    scores_text = self.font.render(str(score) + ' sharks', True, GOLD)
+                    scores_text = self.font.render(str(score) + ' fish collected', True, GOLD)
                     count_text = self.font.render(count_str, True, GOLD)
                     currentScoreAlreadyDisplayed = True
                 else:
-                    scores_text = self.makePinkFont(str(score) + ' sharks')
+                    scores_text = self.makePinkFont(str(score) + ' fish collected')
                     count_text = self.makePinkFont(count_str)
 
                 # Put score on screen
@@ -169,11 +170,17 @@ if __name__ == '__main__':
 
             gamestate = didPlayerPressQuit(gamestate, event)
 
-            # Should we add a new enemy?
+            # Add new jellyfish if counter has passed
+            if event.type == gameParams.ADDJELLYFISH:
+                new_jellyfish = Jellyfish(SCREEN_WIDTH, SCREEN_HEIGHT, PATH)
+                gameParams.jellyfish.add(new_jellyfish)
+                gameParams.all_sprites.add(new_jellyfish)
+
+            # Should we add a new shark?
             if event.type == gameParams.ADDSHARK:
                 # Create the new enemy, and add it to our sprite groups
                 new_shark = Shark(SCREEN_WIDTH,SCREEN_HEIGHT,PATH)
-                gameParams.enemies.add(new_shark)
+                gameParams.sharks.add(new_shark)
                 gameParams.all_sprites.add(new_shark)
 
                 # Increase difficulty the longer the player is in the game
@@ -197,7 +204,8 @@ if __name__ == '__main__':
         gameParams.player.update(keyboard_input,BCI_input,gameParams.useBCIinput)
 
         # Update the position of our enemies and clouds
-        gameParams.enemies.update()
+        gameParams.sharks.update()
+        gameParams.jellyfish.update()
 
         # Draw all our sprites
         for entity in gameParams.all_sprites:
@@ -207,15 +215,26 @@ if __name__ == '__main__':
 
         # print("check4")
 
-        # Check if any enemies have collided with the player
-        for shark in gameParams.enemies:
-            if shark.rect.colliderect(gameParams.player.rect):
-                shark.kill()
+        # Check if any sharks have collided with the player
+        for sharks in gameParams.sharks:
+            if sharks.rect.colliderect(gameParams.player.rect):
+                sharks.kill()
                 soundSystem.coin_sound.play()
                 gameParams.nrSharksCollected += 1
                 # Show the player how much coins have been collected
                 text = str(gameParams.nrSharksCollected).rjust(3)
                 gameParams.nrSharksCollectedText = gameParams.font.render(text, True, GOLD)
+
+            # Check if any sharks have collided with the player
+        for jelllyfish in gameParams.jellyfish:
+            if jelllyfish.rect.colliderect(gameParams.player.rect):
+                jelllyfish.kill()
+                soundSystem.jellyfishCollected.play()
+                gameParams.nrSharksCollected += 5 # Extra points for jellyfish!
+                # Show the player how much coins have been collected
+                text = str(gameParams.nrSharksCollected).rjust(3)
+                gameParams.nrSharksCollectedText = gameParams.font.render(text, True, GOLD)
+
 
         # Draw game time counter text
         screen.blit(gameParams.gameTimeCounterText, (SCREEN_WIDTH - 70, 20))

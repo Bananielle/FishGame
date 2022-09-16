@@ -12,6 +12,7 @@ class SoundSystem():
         self.move_down_sound = simpleaudio.WaveObject.from_wave_file("Resources/bubbles.wav")
      #  self.collision_sound = pygame.mixer.Sound("Collision.ogg")
         self.coin_sound = simpleaudio.WaveObject.from_wave_file("Resources/coin.wav")
+        self.jellyfishCollected = simpleaudio.WaveObject.from_wave_file("Resources/collectedJellyfish.wav")
         self.playingBubbleSound = self.move_up_sound.play()
 
 

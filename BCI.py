@@ -8,7 +8,6 @@ from pygame.locals import (
 
 )
 
-
 class BCI():
     def __init__(self):
         self.currentInput = 0
