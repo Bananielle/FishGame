@@ -47,6 +47,7 @@ if __name__ == '__main__':
     # Colours
     GOLD = (255, 184, 28)
     PINK = (170,22,166)
+    RED = (255,0,0)
 
     # Brain input variables
     fakeBrainInput =0
@@ -233,7 +234,7 @@ if __name__ == '__main__':
                 gameParams.nrSharksCollected += 5 # Extra points for jellyfish!
                 # Show the player how much coins have been collected
                 text = str(gameParams.nrSharksCollected).rjust(3)
-                gameParams.nrSharksCollectedText = gameParams.font.render(text, True, GOLD)
+                gameParams.nrSharksCollectedText = gameParams.jellyfishCollectedFont.render(text, True, RED)
 
 
         # Draw game time counter text

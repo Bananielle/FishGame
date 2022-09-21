@@ -22,6 +22,7 @@ class GameParameters():
 
         self.counterText = str('-').rjust(3)
         self.font = pygame.font.SysFont('herculanum', 35, bold=True, )
+        self.jellyfishCollectedFont = pygame.font.SysFont('herculanum', 45, bold=True, )
         self.gameTimeCounterText = self.font.render(self.counterText, True, PINK)
 
         self.nrSharksCollected = 0
