@@ -171,6 +171,11 @@ if __name__ == '__main__':
 
             gamestate = didPlayerPressQuit(gamestate, event)
 
+            if event.type == BCI.GET_TURBOSATORI_INPUT:
+                BCI_input = BCI.getKeyboardPressFromBrainInput()  # Check for BCI-based keyboard presses
+            else:
+                BCI_input = 0
+
             # Add new jellyfish if counter has passed
             if event.type == gameParams.ADDJELLYFISH:
                 new_jellyfish = Jellyfish(SCREEN_WIDTH, SCREEN_HEIGHT, PATH)
@@ -203,10 +208,9 @@ if __name__ == '__main__':
                    # print('Main game: Difficulty updated. Minspeed = ', gameParams.maxSpeed, ', maxspeed = ',
                     #      gameParams.minSpeed)
 
-        # Get user input
-        keyboard_input = pygame.key.get_pressed() # Get the set of keyboard keys pressed from user
-        BCI_input = BCI.getKeyboardPressFromBrainInput()  # Check for BCI-based keyboard presses
-        gameParams.player.update(keyboard_input,BCI_input,gameParams.useBCIinput)
+            # Get user input
+            keyboard_input = pygame.key.get_pressed() # Get the set of keyboard keys pressed from user
+            gameParams.player.update(keyboard_input,BCI_input,gameParams.useBCIinput)
 
         # Update the position of our enemies and clouds
         gameParams.sharks.update()
@@ -350,6 +354,7 @@ if __name__ == '__main__':
 
     # Set up a new game (will be refreshed after every replay)
     gamestate, gameParams, mainGame_background = startANewGame()
+    BCI_input = 0
 
 
     # ========== GAME STATE MACHINE ==============
