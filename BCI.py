@@ -30,6 +30,7 @@ class BCI():
             Selected = self.tsi.get_selected_channels()[0]
             oxy = self.tsi.get_data_oxy(Selected[0], currentTimePoint - 1)[0]
             input = oxy
+            print("Current time point: " + str(currentTimePoint), ", selected channels: " + str(Selected) + " , oxy: " + str(oxy))
         else:
             input = 0
 

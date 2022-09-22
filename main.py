@@ -176,6 +176,9 @@ if __name__ == '__main__':
                 new_jellyfish = Jellyfish(SCREEN_WIDTH, SCREEN_HEIGHT, PATH)
                 gameParams.jellyfish.add(new_jellyfish)
                 gameParams.all_sprites.add(new_jellyfish)
+                print("New jellyfish added at (game time counter) = " + str(gameParams.gameTimeCounter_s))
+
+
 
             # Should we add a new shark?
             if event.type == gameParams.ADDSHARK:
@@ -183,6 +186,7 @@ if __name__ == '__main__':
                 new_shark = Shark(SCREEN_WIDTH,SCREEN_HEIGHT,PATH)
                 gameParams.sharks.add(new_shark)
                 gameParams.all_sprites.add(new_shark)
+                print("New shark added at (game time counter) = " + str(gameParams.gameTimeCounter_s))
 
                 # Increase difficulty the longer the player is in the game
                 if gameParams.difficultyCounter > 150:
@@ -196,8 +200,8 @@ if __name__ == '__main__':
                     new_shark.speed = random.randint(gameParams.minSpeed, gameParams.maxSpeed)
                     gameParams.timer_ms = gameParams.timer_ms - 5
                     pygame.time.set_timer(gameParams.ADDSHARK, gameParams.timer_ms)
-                    print('Main game: Difficulty updated. Minspeed = ', gameParams.maxSpeed, ', maxspeed = ',
-                          gameParams.minSpeed)
+                   # print('Main game: Difficulty updated. Minspeed = ', gameParams.maxSpeed, ', maxspeed = ',
+                    #      gameParams.minSpeed)
 
         # Get user input
         keyboard_input = pygame.key.get_pressed() # Get the set of keyboard keys pressed from user
@@ -207,6 +211,7 @@ if __name__ == '__main__':
         # Update the position of our enemies and clouds
         gameParams.sharks.update()
         gameParams.jellyfish.update()
+        print
 
         # Draw all our sprites
         for entity in gameParams.all_sprites:
@@ -318,8 +323,8 @@ if __name__ == '__main__':
     infoObject = pygame.display.Info()
     # pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
 
-    SCREEN_WIDTH = infoObject.current_w
-    SCREEN_HEIGHT = infoObject.current_h
+    SCREEN_WIDTH = infoObject.current_w - int(infoObject.current_w/3)
+    SCREEN_HEIGHT = infoObject.current_h - int(infoObject.current_h/3)
     print('Screen width = ' + str(SCREEN_WIDTH) + ', screen height = ' + str(SCREEN_HEIGHT))
 
     # Clock
@@ -328,7 +333,7 @@ if __name__ == '__main__':
     # Screen
     SURFACE = pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE
     # Create the screen object. The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
-    screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT),pygame.FULLSCREEN) # WARNING: WITH fullscreen using an external screen may cause problems (tip: it helps if you don't have pycharm in fullscreen already)
+    screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT)) # WARNING: WITH fullscreen using an external screen may cause problems (tip: it helps if you don't have pycharm in fullscreen already)
 
     # Setup sounds
     pygame.mixer.init()  # Setup for sounds, defaults are good

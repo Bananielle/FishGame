@@ -24,7 +24,7 @@ class MainPlayer(pygame.sprite.Sprite):
         self.surf = pygame.transform.scale(self.surf, (self.surf.get_width() * 2,self.surf.get_height() * 2)) # But this greatly reduces the image quality...
         self.rect = self.surf.get_rect(center=(
             random.randint(20, 60),
-            random.randint(SCREEN_HEIGHT - (SCREEN_HEIGHT/2), SCREEN_HEIGHT - (SCREEN_HEIGHT/20))))
+            random.randint(SCREEN_HEIGHT - (int(SCREEN_HEIGHT/2)), SCREEN_HEIGHT - (int(SCREEN_HEIGHT/20)))))
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.soundSystem = soundSystem
