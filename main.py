@@ -150,6 +150,7 @@ if __name__ == '__main__':
 
     def runMainGame():
         gamestate = GameState.MAINGAME
+        BCI_input = 0
 
         mainGame_background.updateBackGrounds()
         displaySeaBackgroundsOnScreen()
@@ -173,8 +174,7 @@ if __name__ == '__main__':
 
             if event.type == BCI.GET_TURBOSATORI_INPUT:
                 BCI_input = BCI.getKeyboardPressFromBrainInput()  # Check for BCI-based keyboard presses
-            else:
-                BCI_input = 0
+
 
             # Add new jellyfish if counter has passed
             if event.type == gameParams.ADDJELLYFISH:
@@ -208,9 +208,9 @@ if __name__ == '__main__':
                    # print('Main game: Difficulty updated. Minspeed = ', gameParams.maxSpeed, ', maxspeed = ',
                     #      gameParams.minSpeed)
 
-            # Get user input
-            keyboard_input = pygame.key.get_pressed() # Get the set of keyboard keys pressed from user
-            gameParams.player.update(keyboard_input,BCI_input,gameParams.useBCIinput)
+        # Get user input
+        keyboard_input = pygame.key.get_pressed() # Get the set of keyboard keys pressed from user
+        gameParams.player.update(keyboard_input,BCI_input,gameParams.useBCIinput)
 
         # Update the position of our enemies and clouds
         gameParams.sharks.update()
