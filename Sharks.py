@@ -29,7 +29,7 @@ class Shark(pygame.sprite.Sprite):
             )
         )
         self.minSpeed = 3  * gameParams.velocity * gameParams.deltaTime
-        self.maxSpeed = 10  * gameParams.velocity * gameParams.deltaTime
+        self.maxSpeed = 15  * gameParams.velocity * gameParams.deltaTime
 
         self.speed = random.randint(self.minSpeed, self.maxSpeed)
 

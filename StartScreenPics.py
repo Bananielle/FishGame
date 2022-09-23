@@ -8,11 +8,10 @@ RLEACCEL,
 )
 
 class PressSpace(pygame.sprite.Sprite):
-    def __init__(self,SCREEN_WIDTH,SCREEN_HEIGHT,PATH):
+    def __init__(self,SCREEN_WIDTH,SCREEN_HEIGHT):
         super(PressSpace, self).__init__()
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
-        self.PATH = PATH
         self.surf = pygame.image.load("Resources/press_space.png").convert()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         self.rect = self.surf.get_rect()
@@ -25,11 +24,10 @@ class PressSpace(pygame.sprite.Sprite):
 
 
 class Fish(pygame.sprite.Sprite):
-    def __init__(self,SCREEN_WIDTH,SCREEN_HEIGHT,PATH):
+    def __init__(self,SCREEN_WIDTH,SCREEN_HEIGHT):
         super(Fish, self).__init__()
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
-        self.PATH = PATH
         self.surf = pygame.image.load("Resources/bigfish.png").convert()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         self.rect = self.surf.get_rect()
@@ -42,11 +40,10 @@ class Fish(pygame.sprite.Sprite):
 
 
 class FishAdventure(pygame.sprite.Sprite):
-    def __init__(self,SCREEN_WIDTH,SCREEN_HEIGHT,PATH):
+    def __init__(self,SCREEN_WIDTH,SCREEN_HEIGHT):
         super(FishAdventure, self).__init__()
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
-        self.PATH = PATH
         self.surf = pygame.image.load("Resources/fish_adventure.png").convert_alpha()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         self.rect = self.surf.get_rect()

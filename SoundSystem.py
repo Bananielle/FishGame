@@ -6,7 +6,7 @@ import os, simpleaudio
 
 # Set up the sounds
 class SoundSystem():
-    def __init__(self,PATH):
+    def __init__(self):
 
         self.move_up_sound = simpleaudio.WaveObject.from_wave_file("Resources/bubbles.wav")
         self.move_down_sound = simpleaudio.WaveObject.from_wave_file("Resources/bubbles.wav")

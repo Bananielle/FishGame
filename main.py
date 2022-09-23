@@ -40,8 +40,7 @@ if __name__ == '__main__':
         QUIT,
     )
 
-
-    PATH = os.getcwd() + '/'
+    FULLSCREEN = 0 # pygame.FULLSCREEN #
 
     # Timing stuff
     prev_time = 0
@@ -124,7 +123,7 @@ if __name__ == '__main__':
 
         player = MainPlayer(SCREEN_WIDTH,SCREEN_HEIGHT,0, soundSystem)
 
-        gameParameters = GameParameters(player,SCREEN_WIDTH,SCREEN_HEIGHT,PATH)
+        gameParameters = GameParameters(player,SCREEN_WIDTH,SCREEN_HEIGHT)
         player.gameParams = gameParameters # So that player also has access to game parameters
 
         mainGameBackGround = MainGame_background(SCREEN_WIDTH,SCREEN_HEIGHT,gameParameters)
@@ -134,9 +133,9 @@ if __name__ == '__main__':
     def runStartScreen():
         gamestate = GameState.STARTSCREEN
         screen.fill([0, 0, 0])  # Set black background
-        startscreen = PressSpace(SCREEN_WIDTH,SCREEN_HEIGHT,PATH)
-        fish = Fish(SCREEN_WIDTH,SCREEN_HEIGHT,PATH)
-        fishadventure_text = FishAdventure(SCREEN_WIDTH,SCREEN_HEIGHT,PATH)
+        startscreen = PressSpace(SCREEN_WIDTH,SCREEN_HEIGHT)
+        fish = Fish(SCREEN_WIDTH,SCREEN_HEIGHT)
+        fishadventure_text = FishAdventure(SCREEN_WIDTH,SCREEN_HEIGHT)
         screen.blit(startscreen.surf, startscreen.surf_center)
         screen.blit(fish.surf, fish.location)
         screen.blit(fishadventure_text.surf, fishadventure_text.location)
@@ -197,20 +196,6 @@ if __name__ == '__main__':
                 gameParams.all_sprites.add(new_shark)
                 print("New shark added at (game time counter) = " + str(gameParams.gameTimeCounter_s))
 
-                # Increase difficulty the longer the player is in the game
-                if gameParams.difficultyCounter > 150:
-                    gameParams.difficultyCounter = 0
-                    gameParams.maxSpeed = gameParams.maxSpeed + 1
-                    gameParams.minSpeed = gameParams.minSpeed + 1
-                    if gameParams.maxSpeed > 30:
-                        gameParams.maxSpeed = 30
-                        gameParams.minSpeed = 28
-
-                    new_shark.speed = random.randint(gameParams.minSpeed, gameParams.maxSpeed)
-                    gameParams.timer_ms = gameParams.timer_ms - 5
-                    pygame.time.set_timer(gameParams.ADDSHARK, gameParams.timer_ms)
-                   # print('Main game: Difficulty updated. Minspeed = ', gameParams.maxSpeed, ', maxspeed = ',
-                    #      gameParams.minSpeed)
 
         # Get user input
         keyboard_input = pygame.key.get_pressed() # Get the set of keyboard keys pressed from user
@@ -224,8 +209,6 @@ if __name__ == '__main__':
         # Draw all our sprites
         for entity in gameParams.all_sprites:
             screen.blit(entity.surf, entity.rect)
-
-            gameParams.difficultyCounter = gameParams.difficultyCounter + 1;
 
         # print("check4")
 
@@ -341,12 +324,12 @@ if __name__ == '__main__':
     # Screen
     SURFACE = pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE
     # Create the screen object. The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
-    screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT),pygame.FULLSCREEN) # WARNING: WITH fullscreen using an external screen may cause problems (tip: it helps if you don't have pycharm in fullscreen already)
+    screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT),FULLSCREEN) # WARNING: WITH fullscreen using an external screen may cause problems (tip: it helps if you don't have pycharm in fullscreen already)
 
     # Setup sounds
     pygame.mixer.init()  # Setup for sounds, defaults are good
 
-    soundSystem = SoundSystem(PATH)
+    soundSystem = SoundSystem()
 
     BCI = BCI()
 
