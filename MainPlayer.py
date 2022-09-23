@@ -29,7 +29,7 @@ class MainPlayer(pygame.sprite.Sprite):
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.soundSystem = soundSystem
-        self.playerSpeed = 15
+        self.playerSpeed = 10
 
 
     # Move the sprite based on keypresses
@@ -68,11 +68,11 @@ class MainPlayer(pygame.sprite.Sprite):
 
     def moveUp(self):
         self.rect.move_ip(0, self.playerSpeed * -1)
-        self.soundSystem.playBubbleSound(self.soundSystem.move_up_sound)
+        #self.soundSystem.playBubbleSound(self.soundSystem.move_up_sound)
 
     def moveDown(self):
         self.rect.move_ip(0, self.playerSpeed)
-        self.soundSystem.playBubbleSound(self.soundSystem.move_down_sound)
+       # self.soundSystem.playBubbleSound(self.soundSystem.move_down_sound)
 
     def moveLeft(self):
         self.rect.move_ip(self.playerSpeed * -1, 0)

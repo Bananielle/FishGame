@@ -11,7 +11,7 @@ class MainGame_background(pygame.sprite.Sprite):
         self.bgX2_far = self.background_far.get_width()
 
         self.background_middle = pygame.image.load('Resources/sand.png')
-        self.background_middle = pygame.transform.scale(self.background_middle, (SCREEN_WIDTH, SCREEN_HEIGHT - int((SCREEN_HEIGHT/9)))) # Make sure it's an integer because the fucntion doesn't accept floats
+        self.background_middle = pygame.transform.scale(self.background_middle, (SCREEN_WIDTH, SCREEN_HEIGHT - int((SCREEN_HEIGHT/10)))) # Make sure it's an integer because the fucntion doesn't accept floats
         self.bgX_middle = 0
         self.bgX2_middle = self.background_middle.get_width()
 
@@ -37,10 +37,10 @@ class MainGame_background(pygame.sprite.Sprite):
         bgX -= speed  # Move both background images back
         bgX2 -= speed
 
-        if bgX < backgroundWidth * -1:  # If our bg is at the -width then reset its position
+        if bgX < (backgroundWidth-3) * -1:  # If our bg is at the -width then reset its position (-3 to make the transition more seemless)
             bgX = backgroundWidth
 
-        if bgX2 < backgroundWidth * -1:
+        if bgX2 < (backgroundWidth-3) * -1:
             bgX2 = backgroundWidth
 
         return bgX, bgX2

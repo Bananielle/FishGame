@@ -40,7 +40,7 @@ if __name__ == '__main__':
         QUIT,
     )
 
-    FULLSCREEN = 0 # pygame.FULLSCREEN #
+    FULLSCREEN =  pygame.FULLSCREEN #
 
     # Timing stuff
     prev_time = 0
