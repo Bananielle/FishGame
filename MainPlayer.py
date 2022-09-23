@@ -17,8 +17,9 @@ from pygame.locals import (
 # Define the Player object extending pygame.sprite.Sprite
 # Instead of a surface, we use an image for a better looking sprite
 class MainPlayer(pygame.sprite.Sprite):
-    def __init__(self,SCREEN_WIDTH, SCREEN_HEIGHT, PATH, soundSystem):
+    def __init__(self,SCREEN_WIDTH, SCREEN_HEIGHT, gameParams, soundSystem):
         super(MainPlayer, self).__init__()
+        self.gameParams = gameParams
         self.surf = pygame.image.load("Resources/fish.png").convert()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         self.surf = pygame.transform.scale(self.surf, (self.surf.get_width() * 2,self.surf.get_height() * 2)) # But this greatly reduces the image quality...
@@ -30,8 +31,12 @@ class MainPlayer(pygame.sprite.Sprite):
         self.soundSystem = soundSystem
         self.playerSpeed = 15
 
+
     # Move the sprite based on keypresses
     def update(self, pressed_keys,brainKeyPress, useBCIinput):
+
+        # Make sure player speed is framrate independent
+        self.playerSpeed = 15 * self.gameParams.velocity * self.gameParams.deltaTime
 
         # Also allow for BCI input to make player move up and down if True
         if useBCIinput:

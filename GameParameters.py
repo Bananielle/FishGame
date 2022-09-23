@@ -12,8 +12,15 @@ class GameParameters():
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         self.PATH = PATH
 
+        # Adjustable parameters
         self.gameTimeCounter_s = 20 # How long you want to one game run to last (in seconds)
         self.useBCIinput = True # If true, then player will be controlled by BCI input instead of keyboard presses
+        self.velocity = 1
+        self.FPS = 60 # Frame rate. # Defines how often the the while loop is run through. E.g., an FPS of 60 will go through the while loop 60 times per second).
+
+        # Time
+        self.deltaTime = 1
+
 
         self.difficultyCounter = 0
         self.maxSpeed = 10

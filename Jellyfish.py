@@ -16,8 +16,9 @@ from pygame.locals import (
 # Define the enemy object extending pygame.sprite.Sprite
 # Instead of a surface, we use an image for a better looking sprite
 class Jellyfish(pygame.sprite.Sprite):
-    def __init__(self,SCREEN_WIDTH, SCREEN_HEIGHT,PATH):
+    def __init__(self,SCREEN_WIDTH, SCREEN_HEIGHT,gameParams):
         super(Jellyfish, self).__init__()
+        self.gameParams = gameParams
         self.surf = pygame.image.load("Resources/jellyfish.png").convert()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         # The starting position is randomly generated, as is the speed
@@ -27,8 +28,8 @@ class Jellyfish(pygame.sprite.Sprite):
                 random.randint(0, SCREEN_HEIGHT - 400),
             )
         )
-        self.minSpeed = 3
-        self.maxSpeed = 5
+        self.minSpeed = 1 * gameParams.velocity * gameParams.deltaTime
+        self.maxSpeed = 3 * gameParams.velocity * gameParams.deltaTime
         self.speed = random.randint(self.minSpeed, self.maxSpeed)
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGTH = SCREEN_HEIGHT

@@ -1,8 +1,9 @@
 import pygame
 
 class MainGame_background(pygame.sprite.Sprite):
-    def __init__(self, SCREEN_WIDTH,SCREEN_HEIGHT,PATH):
+    def __init__(self, SCREEN_WIDTH,SCREEN_HEIGHT,gameParams):
         super(MainGame_background, self).__init__()
+        self.gameParams = gameParams
         self.background_far = pygame.image.load('Resources/far.png')
         self.background_far = pygame.transform.scale(self.background_far,
                                                      (SCREEN_WIDTH, self.background_far.get_height() * 3))
@@ -20,12 +21,14 @@ class MainGame_background(pygame.sprite.Sprite):
         self.bgX_foreground = 0
         self.bgX2_foreground = self.background_foreground.get_width()
 
+        self.backgroundSpeed =  gameParams.velocity * gameParams.deltaTime
+
     def updateBackGrounds(self):
-        self.bgX_far, self.bgX2_far = self.move_background(1.4, self.background_far.get_width(), self.bgX_far,
+        self.bgX_far, self.bgX2_far = self.move_background(1.4 * self.backgroundSpeed, self.background_far.get_width(), self.bgX_far,
                                                            self.bgX2_far)
-        self.bgX_middle, self.bgX2_middle = self.move_background(1.8, self.background_middle.get_width(),
+        self.bgX_middle, self.bgX2_middle = self.move_background(1.8 * self.backgroundSpeed, self.background_middle.get_width(),
                                                                  self.bgX_middle, self.bgX2_middle)
-        self.bgX_foreground, self.bgX2_foreground = self.move_background(2, self.background_foreground.get_width(),
+        self.bgX_foreground, self.bgX2_foreground = self.move_background(2 * self.backgroundSpeed, self.background_foreground.get_width(),
                                                                          self.bgX_foreground,
                                                                          self.bgX2_foreground)
 

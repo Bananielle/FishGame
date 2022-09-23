@@ -43,6 +43,9 @@ if __name__ == '__main__':
 
     PATH = os.getcwd() + '/'
 
+    # Timing stuff
+    prev_time = 0
+
 
     # Colours
     GOLD = (255, 184, 28)
@@ -119,11 +122,12 @@ if __name__ == '__main__':
         print('Starting a new game.')
         gamestate = GameState.setGameState(GameState.MAINGAME)
 
-        player = MainPlayer(SCREEN_WIDTH,SCREEN_HEIGHT,PATH, soundSystem)
+        player = MainPlayer(SCREEN_WIDTH,SCREEN_HEIGHT,0, soundSystem)
 
         gameParameters = GameParameters(player,SCREEN_WIDTH,SCREEN_HEIGHT,PATH)
+        player.gameParams = gameParameters # So that player also has access to game parameters
 
-        mainGameBackGround = MainGame_background(SCREEN_WIDTH,SCREEN_HEIGHT,PATH)
+        mainGameBackGround = MainGame_background(SCREEN_WIDTH,SCREEN_HEIGHT,gameParameters)
 
         return gamestate, gameParameters, mainGameBackGround  # Reinitialize game parameters and background
 
@@ -178,7 +182,7 @@ if __name__ == '__main__':
 
             # Add new jellyfish if counter has passed
             if event.type == gameParams.ADDJELLYFISH:
-                new_jellyfish = Jellyfish(SCREEN_WIDTH, SCREEN_HEIGHT, PATH)
+                new_jellyfish = Jellyfish(SCREEN_WIDTH, SCREEN_HEIGHT, gameParams)
                 gameParams.jellyfish.add(new_jellyfish)
                 gameParams.all_sprites.add(new_jellyfish)
                 print("New jellyfish added at (game time counter) = " + str(gameParams.gameTimeCounter_s))
@@ -188,7 +192,7 @@ if __name__ == '__main__':
             # Should we add a new shark?
             if event.type == gameParams.ADDSHARK:
                 # Create the new enemy, and add it to our sprite groups
-                new_shark = Shark(SCREEN_WIDTH,SCREEN_HEIGHT,PATH)
+                new_shark = Shark(SCREEN_WIDTH,SCREEN_HEIGHT,gameParams)
                 gameParams.sharks.add(new_shark)
                 gameParams.all_sprites.add(new_shark)
                 print("New shark added at (game time counter) = " + str(gameParams.gameTimeCounter_s))
@@ -332,12 +336,12 @@ if __name__ == '__main__':
     print('Screen width = ' + str(SCREEN_WIDTH) + ', screen height = ' + str(SCREEN_HEIGHT))
 
     # Clock
-    clock = pygame.time.Clock()  # Setup the clock for a decent framerate
+    clock = pygame.time.Clock()  # Setup the clock for tracking time
 
     # Screen
     SURFACE = pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE
     # Create the screen object. The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
-    screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT)) # WARNING: WITH fullscreen using an external screen may cause problems (tip: it helps if you don't have pycharm in fullscreen already)
+    screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT),pygame.FULLSCREEN) # WARNING: WITH fullscreen using an external screen may cause problems (tip: it helps if you don't have pycharm in fullscreen already)
 
     # Setup sounds
     pygame.mixer.init()  # Setup for sounds, defaults are good
@@ -360,7 +364,7 @@ if __name__ == '__main__':
     # ========== GAME STATE MACHINE ==============
     gamestate = GameState.STARTSCREEN
     run = True
-    while run:
+    while run: # Game loop (= one frame)
 
         if gamestate == GameState.STARTSCREEN:
             gamestate = runStartScreen()
@@ -380,8 +384,12 @@ if __name__ == '__main__':
         elif gamestate == GameState.QUITGAME:
             run = False # quit the while loop
 
-        # Ensure we maintain a 30 frames per second rate
-        clock.tick(60)
+        # Take care of time
+        clock.tick(gameParams.FPS)  # Updates the clock using a framerate of x frames per second (so goes through the while loop e.g. 60 times per second).
+        now = pygame.time.get_ticks() # Get current time since pygame started
+        gameParams.deltaTime = int ((now - prev_time) / 10) # Compute delta time... divided by 10 because to make sprite speed more manageble
+        prev_time = now
+
         pygame.display.flip()
 
 
