@@ -8,7 +8,7 @@ from pygame.locals import (
 )
 
 class GameOver(pygame.sprite.Sprite):
-    def __init__(self,path,SCREEN_WIDTH,SCREEN_HEIGHT):
+    def __init__(self,SCREEN_WIDTH,SCREEN_HEIGHT):
         super(GameOver, self).__init__()
         self.surf = pygame.image.load("Resources/gameover.png").convert()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
@@ -22,7 +22,7 @@ class GameOver(pygame.sprite.Sprite):
 
 
 class PressSpaceToReplay(pygame.sprite.Sprite):
-    def __init__(self,path,SCREEN_WIDTH,SCREEN_HEIGHT):
+    def __init__(self,SCREEN_WIDTH,SCREEN_HEIGHT):
         super(PressSpaceToReplay, self).__init__()
         self.surf = pygame.image.load("Resources/replay.png").convert_alpha()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)

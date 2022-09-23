@@ -34,6 +34,8 @@ class Jellyfish(pygame.sprite.Sprite):
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGTH = SCREEN_HEIGHT
         self.movedUpCounter = 0
+        self.reachedFinalSpot = False
+        self.endSpot = random.randint(int(self.SCREEN_WIDTH / 1.8), int(self.SCREEN_WIDTH / 1.1))
 
 
     # Move the enemy based on speed
@@ -48,5 +50,10 @@ class Jellyfish(pygame.sprite.Sprite):
 
         self.movedUpCounter += 1
 
-        if self.rect.right > self.SCREEN_WIDTH / 1.5: # Make jelly fish stop on the right side of the screen
-            self.rect.move_ip(-self.speed, 0)
+
+        # If jellyfish has not yet reached its endspot
+        if self.rect.right > self.endSpot: # If jellyfish has not yet reached its endspot
+            self.rect.move_ip(-self.speed, 0) # Keep moving to the left
+        else: # Otherwise make jelly fish stop on a random spot somewhere on the right side of the screen
+            self.reachedFinalSpot = True
+

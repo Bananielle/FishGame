@@ -40,7 +40,7 @@ if __name__ == '__main__':
         QUIT,
     )
 
-    FULLSCREEN =  pygame.FULLSCREEN #
+    FULLSCREEN = 0 # pygame.FULLSCREEN #
 
     # Timing stuff
     prev_time = 0
@@ -241,8 +241,8 @@ if __name__ == '__main__':
 
     def runGameOver():
         gamestate = GameState.GAMEOVER
-        gameover = GameOver(PATH, SCREEN_WIDTH, SCREEN_HEIGHT)
-        replay = PressSpaceToReplay(PATH, SCREEN_WIDTH, SCREEN_HEIGHT)
+        gameover = GameOver(SCREEN_WIDTH, SCREEN_HEIGHT)
+        replay = PressSpaceToReplay(SCREEN_WIDTH, SCREEN_HEIGHT)
         screen.blit(gameover.surf, gameover.surf_center)
         screen.blit(replay.surf, replay.surf_center)
 
@@ -267,7 +267,7 @@ if __name__ == '__main__':
         gamestate = GameState.SCOREBOARD
 
         displaySeaBackgroundsOnScreen()
-        replay = PressSpaceToReplay(PATH, SCREEN_WIDTH, SCREEN_HEIGHT)
+        replay = PressSpaceToReplay(SCREEN_WIDTH, SCREEN_HEIGHT)
         screen.blit(replay.surf, replay.surf_center)
         scoreboard.displayScoreboard()
 
@@ -314,8 +314,14 @@ if __name__ == '__main__':
     infoObject = pygame.display.Info()
     # pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
 
-    SCREEN_WIDTH = infoObject.current_w - int(infoObject.current_w/3)
-    SCREEN_HEIGHT = infoObject.current_h - int(infoObject.current_h/3)
+    if FULLSCREEN == 0:
+        SCREEN_WIDTH = infoObject.current_w - int(infoObject.current_w/3)
+        SCREEN_HEIGHT = infoObject.current_h - int(infoObject.current_h/3)
+    else: # If fullscreen is selected, adjust all size parameters to fullscreen
+        SCREEN_WIDTH = infoObject.current_w
+        SCREEN_HEIGHT = infoObject.current_h
+
+
     print('Screen width = ' + str(SCREEN_WIDTH) + ', screen height = ' + str(SCREEN_HEIGHT))
 
     # Clock
