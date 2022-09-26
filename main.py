@@ -128,7 +128,7 @@ if __name__ == '__main__':
 
         mainGameBackGround = MainGame_background(SCREEN_WIDTH,SCREEN_HEIGHT,gameParameters)
 
-        soundSystem.playMaintheme_slow()
+
 
         return gamestate, gameParameters, mainGameBackGround  # Reinitialize game parameters and background
 
@@ -142,6 +142,9 @@ if __name__ == '__main__':
         screen.blit(fish.surf, fish.location)
         screen.blit(fishadventure_text.surf, fishadventure_text.location)
 
+        soundSystem.playStartScreenSound()
+
+
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 # If space to start
@@ -154,6 +157,7 @@ if __name__ == '__main__':
         return gamestate
 
     def runMainGame():
+        soundSystem.playMaintheme_slow()
         gamestate = GameState.MAINGAME
         BCI_input = 0
 
@@ -174,6 +178,8 @@ if __name__ == '__main__':
                     text = str(gameParams.gameTimeCounter_s).rjust(3)
                     gameParams.gameTimeCounterText = scoreboard.makePinkFont(text)
                     print(text)
+                    if (gameParams.gameTimeCounter_s == 10): # speed up the main theme if less than 10 seconds left
+                        soundSystem.speedupMaintheme()
                     if (gameParams.gameTimeCounter_s == 3): # Play countdown if only 3 seconds left
                         soundSystem.countdownSound.play()
 
@@ -245,6 +251,11 @@ if __name__ == '__main__':
 
     def runGameOver():
         gamestate = GameState.GAMEOVER
+
+        # Sounds
+        soundSystem.fadeIntoGameOverMusicTheme()
+        soundSystem.playedStartScreenSound = False
+
         gameover = GameOver(SCREEN_WIDTH, SCREEN_HEIGHT)
         replay = PressSpaceToReplay(SCREEN_WIDTH, SCREEN_HEIGHT)
         screen.blit(gameover.surf, gameover.surf_center)
@@ -259,6 +270,7 @@ if __name__ == '__main__':
 
                 if event.key == K_SPACE:
                     gamestate = GameState.setGameState(GameState.SCOREBOARD)
+
 
                     # Reset game parameters if you want to restart a game
                     gameParams.reset()
@@ -280,6 +292,7 @@ if __name__ == '__main__':
 
                 if event.key == K_SPACE:
                     gamestate = GameState.setGameState(GameState.STARTSCREEN)
+                    soundSystem.stopGameOverMusicTheme()
 
             gamestate = didPlayerPressQuit(gamestate, event)
 

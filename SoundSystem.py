@@ -1,5 +1,6 @@
-
 import os, simpleaudio
+from pygame import mixer  # Only use this one for the main theme
+
 
 # Use a different module for sounds, because the pygame soundsystem didn't work together with  python 2.7.5.
 # (which was needed for exypriment...)
@@ -10,24 +11,70 @@ class SoundSystem():
 
         self.move_up_sound = simpleaudio.WaveObject.from_wave_file("Resources/bubbles.wav")
         self.move_down_sound = simpleaudio.WaveObject.from_wave_file("Resources/bubbles.wav")
-     #  self.collision_sound = pygame.mixer.Sound("Collision.ogg")
+        #  self.collision_sound = pygame.mixer.Sound("Collision.ogg")
         self.coin_sound = simpleaudio.WaveObject.from_wave_file("Resources/coin.wav")
         self.jellyfishCollected = simpleaudio.WaveObject.from_wave_file("Resources/collectedJellyfish.wav")
         self.countdownSound = simpleaudio.WaveObject.from_wave_file("Resources/countdown.wav")
-        self.maintheme_slow = simpleaudio.WaveObject.from_wave_file("Resources/maintheme_slow.wav")
-        self.maintheme_fast = simpleaudio.WaveObject.from_wave_file("Resources/maintheme_fast.wav")
+        # self.maintheme_slow = simpleaudio.WaveObject.from_wave_file("Resources/maintheme_slow.wav")
+        # self.maintheme_fast = simpleaudio.WaveObject.from_wave_file("Resources/maintheme_fast.wav")
 
         self.playingBubbleSound = self.move_up_sound.play()
-        self.playingMainTheme_slow = self.maintheme_slow.play()
+        self.playedStartScreenSound =False
 
+        # Pygame mixer
+        mixer.init()
+        self.channel1 = mixer.Channel(0)
+        self.maintheme_slow = mixer.Sound("Resources/maintheme_slow.wav")
+        self.maintheme_slow.set_volume(0.3)
+        self.maintheme_slowIsPlaying = False
+
+        self.channel2 = mixer.Channel(1)
+        self.maintheme_fast = mixer.Sound("Resources/maintheme_fast.wav")
+        self.maintheme_fast.set_volume(0.3)
+
+        self.channel3 = mixer.Channel(2)
+        self.gameoverSound = mixer.Sound("Resources/gameoverSound.wav")
+
+        self.channel4 = mixer.Channel(3)
+        self.maintheme_gameover = mixer.Sound("Resources/maintheme_gameover.wav")
+        self.maintheme_gameover.set_volume(0.3)
+
+        self.gameoverSoundIsPlaying = False
+        self.gameoverThemeIsPlaying = False
+
+    def playStartScreenSound(self):
+        if not self.playedStartScreenSound:
+            self.playBubbleSound(self.move_up_sound)
+            self.playedStartScreenSound = True
 
     # The bubble sound sounds terrible if they overlap,  first check whether something else is playing. Otherwise you can play the sound
-    def playBubbleSound(self,sound):
+    def playBubbleSound(self, sound):
         if not self.playingBubbleSound.is_playing():
             self.playingBubbleSound = sound.play()
 
     def playMaintheme_slow(self):
-        if not self.playingMainTheme_slow.is_playing():
-            self.playingMainTheme_slow = self.maintheme_slow.play()
+        if not self.maintheme_slowIsPlaying:
+            self.channel3.fadeout(0)  # incase game over theme was still playing
+            self.channel1.play(self.maintheme_slow)
+            self.maintheme_slowIsPlaying = True
 
+    def speedupMaintheme(self):
+        self.channel2.play(self.maintheme_fast)
+        self.channel1.fadeout(1400)
 
+    def fadeIntoGameOverMusicTheme(self):
+        if not self.gameoverSoundIsPlaying:
+            self.channel1.fadeout(1400)  # incase slow main theme is still playing
+            self.channel2.fadeout(1400)
+            self.channel3.play(self.gameoverSound)
+            self.gameoverSoundIsPlaying = True
+        if not self.gameoverThemeIsPlaying:
+            if not mixer.Channel(2).get_busy():
+                self.channel4.play(self.maintheme_gameover)
+                self.gameoverThemeIsPlaying = True
+
+    def stopGameOverMusicTheme(self):
+        self.channel4.fadeout(0)
+        self.gameoverThemeIsPlaying = False
+        self.gameoverSoundIsPlaying = False
+        self.maintheme_slowIsPlaying = False
