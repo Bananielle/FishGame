@@ -128,6 +128,8 @@ if __name__ == '__main__':
 
         mainGameBackGround = MainGame_background(SCREEN_WIDTH,SCREEN_HEIGHT,gameParameters)
 
+        soundSystem.playMaintheme_slow()
+
         return gamestate, gameParameters, mainGameBackGround  # Reinitialize game parameters and background
 
     def runStartScreen():

@@ -13,13 +13,21 @@ class SoundSystem():
      #  self.collision_sound = pygame.mixer.Sound("Collision.ogg")
         self.coin_sound = simpleaudio.WaveObject.from_wave_file("Resources/coin.wav")
         self.jellyfishCollected = simpleaudio.WaveObject.from_wave_file("Resources/collectedJellyfish.wav")
-        self.playingBubbleSound = self.move_up_sound.play()
         self.countdownSound = simpleaudio.WaveObject.from_wave_file("Resources/countdown.wav")
+        self.maintheme_slow = simpleaudio.WaveObject.from_wave_file("Resources/maintheme_slow.wav")
+        self.maintheme_fast = simpleaudio.WaveObject.from_wave_file("Resources/maintheme_fast.wav")
+
+        self.playingBubbleSound = self.move_up_sound.play()
+        self.playingMainTheme_slow = self.maintheme_slow.play()
 
 
     # The bubble sound sounds terrible if they overlap,  first check whether something else is playing. Otherwise you can play the sound
     def playBubbleSound(self,sound):
         if not self.playingBubbleSound.is_playing():
             self.playingBubbleSound = sound.play()
+
+    def playMaintheme_slow(self):
+        if not self.playingMainTheme_slow.is_playing():
+            self.playingMainTheme_slow = self.maintheme_slow.play()
 
 
