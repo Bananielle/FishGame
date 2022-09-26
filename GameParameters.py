@@ -12,7 +12,7 @@ class GameParameters():
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
 
         # Adjustable parameters
-        self.gameTimeCounter_s = 200 # How long you want to one game run to last (in seconds)
+        self.gameTimeCounter_s = 10 # How long you want to one game run to last (in seconds)
         self.useBCIinput = True # If true, then player will be controlled by BCI input instead of keyboard presses
         self.velocity = 1
         self.FPS = 60 # Frame rate. # Defines how often the the while loop is run through. E.g., an FPS of 60 will go through the while loop 60 times per second).
@@ -48,7 +48,8 @@ class GameParameters():
         self.all_sprites.add(self.player)
 
         # Counter
-        pygame.time.set_timer(pygame.USEREVENT, 1000) # in ms
+        self.SECOND_HAS_PASSED = pygame.USEREVENT
+        pygame.time.set_timer(self.SECOND_HAS_PASSED, 1000) # in ms
 
     def reset(self):
         self.all_sprites.empty()

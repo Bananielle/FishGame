@@ -14,6 +14,7 @@ class SoundSystem():
         self.coin_sound = simpleaudio.WaveObject.from_wave_file("Resources/coin.wav")
         self.jellyfishCollected = simpleaudio.WaveObject.from_wave_file("Resources/collectedJellyfish.wav")
         self.playingBubbleSound = self.move_up_sound.play()
+        self.countdownSound = simpleaudio.WaveObject.from_wave_file("Resources/countdown.wav")
 
 
     # The bubble sound sounds terrible if they overlap,  first check whether something else is playing. Otherwise you can play the sound

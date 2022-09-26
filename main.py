@@ -163,7 +163,7 @@ if __name__ == '__main__':
             # print("check1")
 
             # Show the player how much time as passed
-            if event.type == pygame.USEREVENT:
+            if event.type == gameParams.SECOND_HAS_PASSED:
                 if (gameParams.gameTimeCounter_s == 0):
                     gamestate = GameState.GAMEOVER
                     gameParams.player.kill()
@@ -172,6 +172,8 @@ if __name__ == '__main__':
                     text = str(gameParams.gameTimeCounter_s).rjust(3)
                     gameParams.gameTimeCounterText = scoreboard.makePinkFont(text)
                     print(text)
+                    if (gameParams.gameTimeCounter_s == 3): # Play countdown if only 3 seconds left
+                        soundSystem.countdownSound.play()
 
             gamestate = didPlayerPressQuit(gamestate, event)
 
