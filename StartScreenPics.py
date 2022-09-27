@@ -19,7 +19,7 @@ class PressSpace(pygame.sprite.Sprite):
         # Put the center of surf at the center of the display
         self.surf_center = (
             (self.SCREEN_WIDTH - self.surf.get_width()) / 2,
-            (self.SCREEN_HEIGHT - self.surf.get_height()) / 2
+            ((self.SCREEN_HEIGHT*0.8) - self.surf.get_height())
         )
 
 
@@ -35,7 +35,7 @@ class Fish(pygame.sprite.Sprite):
         # Put the center of surf at the center of the display
         self.location = (
             (self.SCREEN_WIDTH - self.surf.get_width()) / 2,
-            (self.SCREEN_HEIGHT - self.surf.get_height()) / 3.5
+            (self.SCREEN_HEIGHT*0.5 - self.surf.get_height())
         )
 
 
@@ -51,6 +51,6 @@ class FishAdventure(pygame.sprite.Sprite):
         # Put the center of surf at the center of the display
         self.location = (
             (self.SCREEN_WIDTH - self.surf.get_width()) / 2,
-            (self.SCREEN_HEIGHT - self.surf.get_height()) / 5.5
+            (self.SCREEN_HEIGHT*0.3 - self.surf.get_height())
         )
 
