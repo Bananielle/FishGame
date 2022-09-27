@@ -4,14 +4,18 @@
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 
 import pygame, random, os
+#import pygame_textinput
+
+import SettingsScreen
 from BCI import BCI
 from GameParameters import GameParameters
 from Jellyfish import Jellyfish
 from SeaBackground import MainGame_background
+from SettingsScreen import Settings_header
 from Sharks import Shark
 from SoundSystem import SoundSystem
 from gameover import GameOver, PressSpaceToReplay
-from StartScreenPics import PressSpace, Fish, FishAdventure
+from StartScreenPics import PressSpace, Fish, FishAdventure, Settings
 from MainPlayer import MainPlayer
 
 
@@ -36,6 +40,7 @@ if __name__ == '__main__':
         K_RIGHT,
         K_ESCAPE,
         K_SPACE,
+        K_s,
         KEYDOWN,
         QUIT,
     )
@@ -61,6 +66,7 @@ if __name__ == '__main__':
     # Used to cycle through different game states with a statemachine
     class GameStates:
         STARTSCREEN = 'StartScreen'
+        SETTINGS = 'Settings'
         STARTNEWGAME = 'StartNewGame'
         MAINGAME = 'MainGame'
         GAMEOVER = 'GameOver'
@@ -138,8 +144,10 @@ if __name__ == '__main__':
         startscreen = PressSpace(SCREEN_WIDTH,SCREEN_HEIGHT)
         fish = Fish(SCREEN_WIDTH,SCREEN_HEIGHT)
         fishadventure_text = FishAdventure(SCREEN_WIDTH,SCREEN_HEIGHT)
+        settings = Settings(SCREEN_WIDTH,SCREEN_HEIGHT)
         screen.blit(startscreen.surf, startscreen.surf_center)
         screen.blit(fish.surf, fish.location)
+        screen.blit(settings.surf, settings.location)
         screen.blit(fishadventure_text.surf, fishadventure_text.location)
 
         soundSystem.playStartScreenSound()
@@ -151,6 +159,36 @@ if __name__ == '__main__':
                 if event.key == K_SPACE:
                     startscreen.kill()
                     gamestate = GameState.setGameState(GameState.STARTNEWGAME)
+
+                if event.key == K_s: # When you press 's'
+                    startscreen.kill()
+                    gamestate = GameState.setGameState(GameState.SETTINGS)
+
+                gamestate = didPlayerPressQuit(gamestate, event)
+
+        return gamestate
+
+    def runSettings():
+        gamestate = GameState.SETTINGS
+        screen.fill([0, 0, 0])  # Set black background
+
+        gameSetting = SettingsScreen.GametimeText(SCREEN_WIDTH,SCREEN_HEIGHT,gameParams)
+
+        settings_header = Settings_header(SCREEN_WIDTH,SCREEN_HEIGHT)
+        screen.blit(settings_header.surf, settings_header.surf_center)
+        screen.blit(gameSetting.gameTimeSetting,gameSetting.location)
+        screen.blit(gameSetting.gameTimeSetting_seconds, gameSetting.location_seconds)
+
+        # Create TextInput-object
+       # textinput = pygame_textinput.TextInputVisualizer()
+        #screen.blit(textinput.surface, (10, 10))
+
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                # If space to start
+                if event.key == K_SPACE:
+                    #startscreen.kill()
+                    gamestate = GameState.setGameState(GameState.STARTSCREEN)
 
                 gamestate = didPlayerPressQuit(gamestate, event)
 
@@ -374,6 +412,9 @@ if __name__ == '__main__':
 
         if gamestate == GameState.STARTSCREEN:
             gamestate = runStartScreen()
+
+        if gamestate == GameState.SETTINGS:
+            gamestate = runSettings()
 
         if gamestate == GameState.STARTNEWGAME:
             gamestate, gameParams, mainGame_background = startANewGame()

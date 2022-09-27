@@ -4,27 +4,27 @@ import pygame
 # Updated to conform to flake8 and black standards
 # from pygame.locals import *
 from pygame.locals import (
-RLEACCEL,
+    RLEACCEL,
 )
 
+
 class PressSpace(pygame.sprite.Sprite):
-    def __init__(self,SCREEN_WIDTH,SCREEN_HEIGHT):
+    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
         super(PressSpace, self).__init__()
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
-        self.surf = pygame.image.load("Resources/press_space.png").convert()
+        self.surf = pygame.image.load("Resources/press_space.png").convert_alpha()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         self.rect = self.surf.get_rect()
 
-        # Put the center of surf at the center of the display
         self.surf_center = (
             (self.SCREEN_WIDTH - self.surf.get_width()) / 2,
-            ((self.SCREEN_HEIGHT*0.8) - self.surf.get_height())
+            ((self.SCREEN_HEIGHT * 0.8) - self.surf.get_height())
         )
 
 
 class Fish(pygame.sprite.Sprite):
-    def __init__(self,SCREEN_WIDTH,SCREEN_HEIGHT):
+    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
         super(Fish, self).__init__()
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
@@ -32,15 +32,14 @@ class Fish(pygame.sprite.Sprite):
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         self.rect = self.surf.get_rect()
 
-        # Put the center of surf at the center of the display
         self.location = (
             (self.SCREEN_WIDTH - self.surf.get_width()) / 2,
-            (self.SCREEN_HEIGHT*0.5 - self.surf.get_height())
+            (self.SCREEN_HEIGHT * 0.5 - self.surf.get_height())
         )
 
 
 class FishAdventure(pygame.sprite.Sprite):
-    def __init__(self,SCREEN_WIDTH,SCREEN_HEIGHT):
+    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
         super(FishAdventure, self).__init__()
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
@@ -48,9 +47,22 @@ class FishAdventure(pygame.sprite.Sprite):
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         self.rect = self.surf.get_rect()
 
-        # Put the center of surf at the center of the display
         self.location = (
             (self.SCREEN_WIDTH - self.surf.get_width()) / 2,
-            (self.SCREEN_HEIGHT*0.3 - self.surf.get_height())
+            (self.SCREEN_HEIGHT * 0.3 - self.surf.get_height())
         )
 
+
+class Settings(pygame.sprite.Sprite):
+    def __init__(self, SCREEN_WIDTH, SCREEN_HEIGHT):
+        super(Settings, self).__init__()
+        self.SCREEN_WIDTH = SCREEN_WIDTH
+        self.SCREEN_HEIGHT = SCREEN_HEIGHT
+        self.surf = pygame.image.load("Resources/settings.png").convert_alpha()
+        self.surf.set_colorkey((0, 0, 0), RLEACCEL)
+        self.rect = self.surf.get_rect()
+
+        self.location = (
+            (self.SCREEN_WIDTH - self.surf.get_width()) / 2,
+            ((self.SCREEN_HEIGHT * 0.95) - self.surf.get_height())
+        )
