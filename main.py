@@ -5,7 +5,15 @@ Email: d.evenblij@maastrichtuniversity.nl
 Created: June 2022
 Last updated: October 2022
 
-Most important parameters you can adjust
+------------------------------------------------------------------------------------------------------------------------
+Notes for potential problem solving:
+- Use Python 3.7.5 as your interpreter (needed for expyriment)
+- When successfully pip installing expyriment (in a Python 3.7.5. environment), pygame is also immediately installed.
+- You may need to to pip install simpleaudio manually.
+- If you get problems with the pygame mixer library, then toggle off USE_BACKGROUND_MUSIC in SoundSystem.py.
+------------------------------------------------------------------------------------------------------------------------
+
+Most important parameters you can adjust:
 
 In main:
 - You can toggle fullscreen on/off in main.
@@ -18,6 +26,7 @@ In GameParameters:
 In SoundSystem
 - USE_BACKGROUND_MUSIC toggles the background music on/off (note, the background music makes use of the pygame mixer).
 
+------------------------------------------------------------------------------------------------------------------------
 """
 
 import pygame, random, os
