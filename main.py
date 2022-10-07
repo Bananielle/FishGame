@@ -21,7 +21,6 @@ In main:
 In GameParameters:
 - You can adjust how long the game lasts (in seconds) with gameTimeCounter_s.
 - You can adjust how often new sharks and jellyfish appear.
-- You can adjust the speed of all sprites with 'velocity'.
 
 In SoundSystem
 - USE_BACKGROUND_MUSIC toggles the background music on/off (note, the background music makes use of the pygame mixer).
