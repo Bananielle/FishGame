@@ -58,7 +58,7 @@ class Settings(pygame.sprite.Sprite):
         super(Settings, self).__init__()
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
-        self.surf = pygame.image.load("Resources/settings.png").convert_alpha()
+        self.surf = pygame.image.load("Resources/credits.png").convert_alpha()
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         self.rect = self.surf.get_rect()
 

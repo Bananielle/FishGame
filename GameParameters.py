@@ -13,13 +13,11 @@ class GameParameters():
 
         # Adjustable parameters
         self.gameTimeCounter_s = 20 # How long you want to one game run to last (in seconds)
-        self.useBCIinput = True # If true, then player will be controlled by BCI input instead of keyboard presses
-        self.velocity = 1
+        self.useBCIinput = True # If true, then player will be controlled by BCI input next to keyboard presses
         self.FPS = 60 # Frame rate. # Defines how often the the while loop is run through. E.g., an FPS of 60 will go through the while loop 60 times per second).
-        # Create custom events for adding a new sprites
+        # Create custom events for adding a new sprites (sharks and jellyfish)
         self.ADDSHARK = pygame.USEREVENT + 1
         pygame.time.set_timer(self.ADDSHARK, 700) # Define how quickly new sharks are added (e.g., every 1000ms)
-        # Create custom events for adding a new sharks
         self.ADDJELLYFISH = pygame.USEREVENT + 2
         pygame.time.set_timer(self.ADDJELLYFISH, 6000) # Define how quickly new jellyfish are added (e.g., every 4000ms)
 
@@ -27,15 +25,16 @@ class GameParameters():
 
 
         # Time
+        self.velocity = 1 # Determines general speed of all sprites (to ensure frame-rate independence)
         self.deltaTime = 1
 
         self.counterText = str('-').rjust(3)
-        self.font = pygame.font.SysFont('herculanum', 35, bold=True, )
+        self.mainFont = pygame.font.SysFont('herculanum', 35, bold=True, )
         self.jellyfishCollectedFont = pygame.font.SysFont('herculanum', 45, bold=True, )
-        self.gameTimeCounterText = self.font.render(self.counterText, True, PINK)
+        self.gameTimeCounterText = self.mainFont.render(self.counterText, True, PINK)
 
         self.nrSharksCollected = 0
-        self.nrSharksCollectedText = self.font.render(self.counterText, True, GOLD)
+        self.nrSharksCollectedText = self.mainFont.render(self.counterText, True, GOLD)
 
         self.scoreSaved = False
 
@@ -47,7 +46,7 @@ class GameParameters():
         self.all_sprites = pygame.sprite.Group()  # - all_sprites isused for rendering
         self.all_sprites.add(self.player)
 
-        # Counter
+        # Counter ( for countin down the seconds until game over)
         self.SECOND_HAS_PASSED = pygame.USEREVENT
         pygame.time.set_timer(self.SECOND_HAS_PASSED, 1000) # in ms
 

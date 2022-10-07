@@ -1,10 +1,26 @@
-# This is a sample Python script.
+# Main script
+"""
+Author: Danielle Evenblij
+Email: d.evenblij@maastrichtuniversity.nl
+Created: June 2022
+Last updated: October 2022
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+Most important parameters you can adjust
+
+In main:
+- You can toggle fullscreen on/off in main.
+
+In GameParameters:
+- You can adjust how long the game lasts (in seconds) with gameTimeCounter_s.
+- You can adjust how often new sharks and jellyfish appear.
+- You can adjust the speed of all sprites with 'velocity'.
+
+In SoundSystem
+- USE_BACKGROUND_MUSIC toggles the background music on/off (note, the background music makes use of the pygame mixer).
+
+"""
 
 import pygame, random, os
-#import pygame_textinput
 
 import SettingsScreen
 from BCI import BCI
@@ -26,42 +42,35 @@ def print_hi(name):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('Starting up fish game...')
-
+    print_hi('Starting up Fish Game...')
+    print_hi('Developed by Danielle Evenblij, 2022')
     print(os.getcwd())
-
 
     # Import pygame.locals for easier access to key coordinates. Updated to conform to flake8 and black standards
     from pygame.locals import (
         RLEACCEL,
-        K_UP,
-        K_DOWN,
-        K_LEFT,
-        K_RIGHT,
-        K_ESCAPE,
-        K_SPACE,
-        K_s,
-        KEYDOWN,
-        QUIT,
+        K_UP, K_DOWN, K_LEFT, K_RIGHT, K_ESCAPE, K_SPACE, K_s, KEYDOWN, QUIT,
     )
 
-    FULLSCREEN = 0 # pygame.FULLSCREEN #
+    # Configure fullscreen. If you don't want fullscreen, set to 0 instead. Otherwise set to pygame.FULLSCREEN
+    FULLSCREEN =  0 #pygame.FULLSCREEN
+
+    # Colour constants
+    GOLD = (255, 184, 28)
+    PINK = (170, 22, 166)
+    RED = (255, 0, 0)
 
     # Timing stuff
     prev_time = 0
 
-
-    # Colours
-    GOLD = (255, 184, 28)
-    PINK = (170,22,166)
-    RED = (255,0,0)
-
     # Brain input variables
-    fakeBrainInput =0
+    fakeBrainInput = 0
+
 
     def getBrainInput(fakeBrainInput):
-         fakeBrainInput += 1
-         return fakeBrainInput
+        fakeBrainInput += 1
+        return fakeBrainInput
+
 
     # Used to cycle through different game states with a statemachine
     class GameStates:
@@ -73,9 +82,10 @@ if __name__ == '__main__':
         SCOREBOARD = 'Scoreboard'
         QUITGAME = 'QuitGame'
 
-        def setGameState(self,gamestate):
+        def setGameState(self, gamestate):
             print('Going to state: ' + gamestate)
             return gamestate
+
 
     class Scoreboard():
         def __init__(self):
@@ -89,13 +99,14 @@ if __name__ == '__main__':
                 print('Score ', score, ' saved to score list. Is now: ', str(self.scoresList))
 
         def makePinkFont(self, string):
-            text = self.font.render(string, True, PINK) # Pink colour
+            text = self.font.render(string, True, PINK)  # Pink colour
             return text
 
         def displayScoreboard(self):
 
             scoreboard = self.makePinkFont('Scoreboard')
-            screen.blit(scoreboard, ((SCREEN_WIDTH / 2) - (SCREEN_WIDTH * 0.11), (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT * 0.40)))
+            screen.blit(scoreboard,
+                        ((SCREEN_WIDTH / 2) - (SCREEN_WIDTH * 0.11), (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT * 0.40)))
 
             currentScoreAlreadyDisplayed = False
             newPosition = 30
@@ -105,7 +116,7 @@ if __name__ == '__main__':
             # Put each score on the screen in descending order
             for score in sortedScores:
                 count_str = str(count) + '.'
-                if score == gameParams.nrSharksCollected and not currentScoreAlreadyDisplayed: # Colour the currently achieved score GOLD
+                if score == gameParams.nrSharksCollected and not currentScoreAlreadyDisplayed:  # Colour the currently achieved score GOLD
                     scores_text = self.font.render(str(score) + ' fish collected', True, GOLD)
                     count_text = self.font.render(count_str, True, GOLD)
                     currentScoreAlreadyDisplayed = True
@@ -115,43 +126,47 @@ if __name__ == '__main__':
 
                 # Put score on screen
                 screen.blit(count_text,
-                            ((SCREEN_WIDTH / 2.2) - 80, (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT * 0.35) + newPosition))
+                            ((SCREEN_WIDTH / 2.6) - 80, (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT * 0.35) + newPosition))
                 screen.blit(scores_text,
-                            ((SCREEN_WIDTH / 2.2), (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT * 0.35) + newPosition))
+                            ((SCREEN_WIDTH / 2.6), (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT * 0.35) + newPosition))
                 newPosition += 30
                 count += 1
                 # print('score ', score, ' printed')
+
 
     # GAME STATE FUNCTIONS
     def startANewGame():
         print('Starting a new game.')
         gamestate = GameState.setGameState(GameState.MAINGAME)
 
-        player = MainPlayer(SCREEN_WIDTH,SCREEN_HEIGHT,0, soundSystem)
+        player = MainPlayer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, soundSystem)
 
-        gameParameters = GameParameters(player,SCREEN_WIDTH,SCREEN_HEIGHT)
-        player.gameParams = gameParameters # So that player also has access to game parameters
+        gameParameters = GameParameters(player, SCREEN_WIDTH, SCREEN_HEIGHT)
+        player.gameParams = gameParameters  # So that player also has access to game parameters
 
-        mainGameBackGround = MainGame_background(SCREEN_WIDTH,SCREEN_HEIGHT,gameParameters)
-
-
+        mainGameBackGround = MainGame_background(SCREEN_WIDTH, SCREEN_HEIGHT, gameParameters)
 
         return gamestate, gameParameters, mainGameBackGround  # Reinitialize game parameters and background
 
+
     def runStartScreen():
         gamestate = GameState.STARTSCREEN
+
         screen.fill([0, 0, 0])  # Set black background
-        startscreen = PressSpace(SCREEN_WIDTH,SCREEN_HEIGHT)
-        fish = Fish(SCREEN_WIDTH,SCREEN_HEIGHT)
-        fishadventure_text = FishAdventure(SCREEN_WIDTH,SCREEN_HEIGHT)
-        settings = Settings(SCREEN_WIDTH,SCREEN_HEIGHT)
+
+        # Create elements to be put on screen
+        startscreen = PressSpace(SCREEN_WIDTH, SCREEN_HEIGHT)
+        fish = Fish(SCREEN_WIDTH, SCREEN_HEIGHT)
+        fishadventure_text = FishAdventure(SCREEN_WIDTH, SCREEN_HEIGHT)
+        credits = Settings(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+        # Display on screen
         screen.blit(startscreen.surf, startscreen.surf_center)
         screen.blit(fish.surf, fish.location)
-        screen.blit(settings.surf, settings.location)
+        screen.blit(credits.surf, credits.location)
         screen.blit(fishadventure_text.surf, fishadventure_text.location)
 
         soundSystem.playStartScreenSound()
-
 
         for event in pygame.event.get():
             if event.type == KEYDOWN:
@@ -160,39 +175,41 @@ if __name__ == '__main__':
                     startscreen.kill()
                     gamestate = GameState.setGameState(GameState.STARTNEWGAME)
 
-                if event.key == K_s: # When you press 's'
+                if event.key == K_s:  # When you press 's'
                     startscreen.kill()
                     gamestate = GameState.setGameState(GameState.SETTINGS)
 
-                gamestate = didPlayerPressQuit(gamestate, event)
+            gamestate = didPlayerPressQuit(gamestate, event)
 
         return gamestate
+
 
     def runSettings():
         gamestate = GameState.SETTINGS
         screen.fill([0, 0, 0])  # Set black background
 
-        gameSetting = SettingsScreen.GametimeText(SCREEN_WIDTH,SCREEN_HEIGHT,gameParams)
+        gameSetting = SettingsScreen.GametimeText(SCREEN_WIDTH, SCREEN_HEIGHT, gameParams)
 
-        settings_header = Settings_header(SCREEN_WIDTH,SCREEN_HEIGHT)
+        settings_header = Settings_header(SCREEN_WIDTH, SCREEN_HEIGHT)
         screen.blit(settings_header.surf, settings_header.surf_center)
-        screen.blit(gameSetting.gameTimeSetting,gameSetting.location)
+        screen.blit(gameSetting.gameTimeSetting, gameSetting.location)
         screen.blit(gameSetting.gameTimeSetting_seconds, gameSetting.location_seconds)
 
         # Create TextInput-object
-       # textinput = pygame_textinput.TextInputVisualizer()
-        #screen.blit(textinput.surface, (10, 10))
+        # textinput = pygame_textinput.TextInputVisualizer()
+        # screen.blit(textinput.surface, (10, 10))
 
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 # If space to start
                 if event.key == K_SPACE:
-                    #startscreen.kill()
+                    # startscreen.kill()
                     gamestate = GameState.setGameState(GameState.STARTSCREEN)
 
-                gamestate = didPlayerPressQuit(gamestate, event)
+            gamestate = didPlayerPressQuit(gamestate, event)
 
         return gamestate
+
 
     def runMainGame():
         soundSystem.playMaintheme_slow()
@@ -215,17 +232,17 @@ if __name__ == '__main__':
                     gameParams.gameTimeCounter_s -= 1
                     text = str(gameParams.gameTimeCounter_s).rjust(3)
                     gameParams.gameTimeCounterText = scoreboard.makePinkFont(text)
-                    print(text)
-                    if (gameParams.gameTimeCounter_s == 10): # speed up the main theme if less than 10 seconds left
+                    print("Seconds left: " + text)
+                    if (gameParams.gameTimeCounter_s == 10):  # speed up the main theme if less than 10 seconds left
+                        #soundSystem.drum.play()
                         soundSystem.speedupMaintheme()
-                    if (gameParams.gameTimeCounter_s == 3): # Play countdown if only 3 seconds left
+                    if (gameParams.gameTimeCounter_s == 3):  # Play countdown if only 3 seconds left
                         soundSystem.countdownSound.play()
 
-            gamestate = didPlayerPressQuit(gamestate, event)
+
 
             if event.type == BCI.GET_TURBOSATORI_INPUT:
                 BCI_input = BCI.getKeyboardPressFromBrainInput()  # Check for BCI-based keyboard presses
-
 
             # Add new jellyfish if counter has passed
             if event.type == gameParams.ADDJELLYFISH:
@@ -234,25 +251,23 @@ if __name__ == '__main__':
                 gameParams.all_sprites.add(new_jellyfish)
                 print("New jellyfish added at (game time counter) = " + str(gameParams.gameTimeCounter_s))
 
-
-
             # Should we add a new shark?
             if event.type == gameParams.ADDSHARK:
                 # Create the new enemy, and add it to our sprite groups
-                new_shark = Shark(SCREEN_WIDTH,SCREEN_HEIGHT,gameParams)
+                new_shark = Shark(SCREEN_WIDTH, SCREEN_HEIGHT, gameParams)
                 gameParams.sharks.add(new_shark)
                 gameParams.all_sprites.add(new_shark)
                 print("New shark added at (game time counter) = " + str(gameParams.gameTimeCounter_s))
 
+            gamestate = didPlayerPressQuit(gamestate, event)
 
         # Get user input
-        keyboard_input = pygame.key.get_pressed() # Get the set of keyboard keys pressed from user
-        gameParams.player.update(keyboard_input,BCI_input,gameParams.useBCIinput)
+        keyboard_input = pygame.key.get_pressed()  # Get the set of keyboard keys pressed from user
+        gameParams.player.update(keyboard_input, BCI_input, gameParams.useBCIinput)
 
         # Update the position of our enemies and clouds
         gameParams.sharks.update()
         gameParams.jellyfish.update()
-        print
 
         # Draw all our sprites
         for entity in gameParams.all_sprites:
@@ -268,24 +283,24 @@ if __name__ == '__main__':
                 gameParams.nrSharksCollected += 1
                 # Show the player how much coins have been collected
                 text = str(gameParams.nrSharksCollected).rjust(3)
-                gameParams.nrSharksCollectedText = gameParams.font.render(text, True, GOLD)
+                gameParams.nrSharksCollectedText = gameParams.mainFont.render(text, True, GOLD)
 
             # Check if any sharks have collided with the player
         for jelllyfish in gameParams.jellyfish:
             if jelllyfish.rect.colliderect(gameParams.player.rect):
                 jelllyfish.kill()
                 soundSystem.jellyfishCollected.play()
-                gameParams.nrSharksCollected += 5 # Extra points for jellyfish!
+                gameParams.nrSharksCollected += 5  # Extra points for jellyfish!
                 # Show the player how much coins have been collected
                 text = str(gameParams.nrSharksCollected).rjust(3)
                 gameParams.nrSharksCollectedText = gameParams.jellyfishCollectedFont.render(text, True, RED)
-
 
         # Draw game time counter text
         screen.blit(gameParams.gameTimeCounterText, (SCREEN_WIDTH - 70, 20))
         screen.blit(gameParams.nrSharksCollectedText, (SCREEN_WIDTH - 70, 50))
 
         return gamestate
+
 
     def runGameOver():
         gamestate = GameState.GAMEOVER
@@ -309,13 +324,13 @@ if __name__ == '__main__':
                 if event.key == K_SPACE:
                     gamestate = GameState.setGameState(GameState.SCOREBOARD)
 
-
                     # Reset game parameters if you want to restart a game
                     gameParams.reset()
 
             gamestate = didPlayerPressQuit(gamestate, event)
 
         return gamestate
+
 
     def runScoreboard():
         gamestate = GameState.SCOREBOARD
@@ -336,6 +351,7 @@ if __name__ == '__main__':
 
         return gamestate
 
+
     # OTHER FUNCTIONS
     def displaySeaBackgroundsOnScreen():
 
@@ -349,6 +365,7 @@ if __name__ == '__main__':
 
         # return mainGame_background
 
+
     def didPlayerPressQuit(gamestate, event):
 
         if event.type == KEYDOWN:
@@ -357,11 +374,10 @@ if __name__ == '__main__':
 
         if event.type == pygame.QUIT:
             gamestate = GameState.setGameState(GameState.QUITGAME)
-
+            print("Clicked quit.")
 
         return gamestate
 
-        # Define constants for the screen width and height
 
     # INITIALIZE MAIN GAME SCREEN
     pygame.init()  # Initialize pygame
@@ -370,12 +386,11 @@ if __name__ == '__main__':
     # pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
 
     if FULLSCREEN == 0:
-        SCREEN_WIDTH = infoObject.current_w - int(infoObject.current_w/3)
-        SCREEN_HEIGHT = infoObject.current_h - int(infoObject.current_h/3)
-    else: # If fullscreen is selected, adjust all size parameters to fullscreen
+        SCREEN_WIDTH = infoObject.current_w - int(infoObject.current_w / 3)
+        SCREEN_HEIGHT = infoObject.current_h - int(infoObject.current_h / 3)
+    else:  # If fullscreen is selected, adjust all size parameters to fullscreen
         SCREEN_WIDTH = infoObject.current_w
         SCREEN_HEIGHT = infoObject.current_h
-
 
     print('Screen width = ' + str(SCREEN_WIDTH) + ', screen height = ' + str(SCREEN_HEIGHT))
 
@@ -385,7 +400,8 @@ if __name__ == '__main__':
     # Screen
     SURFACE = pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE
     # Create the screen object. The size is determined by the constant SCREEN_WIDTH and SCREEN_HEIGHT
-    screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT),FULLSCREEN) # WARNING: WITH fullscreen using an external screen may cause problems (tip: it helps if you don't have pycharm in fullscreen already)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT),
+                                     FULLSCREEN)  # WARNING: WITH fullscreen using an external screen may cause problems (tip: it helps if you don't have pycharm in fullscreen already)
 
     # Setup sounds
     pygame.mixer.init()  # Setup for sounds, defaults are good
@@ -404,11 +420,10 @@ if __name__ == '__main__':
     gamestate, gameParams, mainGame_background = startANewGame()
     BCI_input = 0
 
-
     # ========== GAME STATE MACHINE ==============
     gamestate = GameState.STARTSCREEN
     run = True
-    while run: # Game loop (= one frame)
+    while run:  # Game loop (= one frame)
 
         if gamestate == GameState.STARTSCREEN:
             gamestate = runStartScreen()
@@ -429,16 +444,17 @@ if __name__ == '__main__':
             gamestate = runScoreboard()
 
         elif gamestate == GameState.QUITGAME:
-            run = False # quit the while loop
+            run = False  # quit the while loop
 
         # Take care of time
-        clock.tick(gameParams.FPS)  # Updates the clock using a framerate of x frames per second (so goes through the while loop e.g. 60 times per second).
-        now = pygame.time.get_ticks() # Get current time since pygame started
-        gameParams.deltaTime = int ((now - prev_time) / 10) # Compute delta time... divided by 10 because to make sprite speed more manageble
+        clock.tick(
+            gameParams.FPS)  # Updates the clock using a framerate of x frames per second (so goes through the while loop e.g. 60 times per second).
+        now = pygame.time.get_ticks()  # Get current time since pygame started
+        gameParams.deltaTime = int(
+            (now - prev_time) / 10)  # Compute delta time... divided by 10 because to make sprite speed more manageble
         prev_time = now
 
         pygame.display.flip()
-
 
     # ====== QUIT GAME =======
     pygame.mixer.music.stop()

@@ -5,7 +5,7 @@ from pygame import mixer  # Only use this one for the main theme
 # Use a different module for sounds, because the pygame soundsystem didn't work together with  python 2.7.5.
 # (which was needed for exypriment...)
 
-USE_PYGAME_MIXER = True
+USE_BACKGROUND_MUSIC = True # toggles the background music on/off (note, the background music makes use of the pygame mixer)
 
 # Set up the sounds
 class SoundSystem():
@@ -19,11 +19,12 @@ class SoundSystem():
         self.countdownSound = simpleaudio.WaveObject.from_wave_file("Resources/countdown.wav")
         # self.maintheme_slow = simpleaudio.WaveObject.from_wave_file("Resources/maintheme_slow.wav")
         # self.maintheme_fast = simpleaudio.WaveObject.from_wave_file("Resources/maintheme_fast.wav")
+        self.drum = simpleaudio.WaveObject.from_wave_file("Resources/drum.wav")
 
         self.playingBubbleSound = self.move_up_sound.play()
         self.playedStartScreenSound =False
 
-        if USE_PYGAME_MIXER:
+        if USE_BACKGROUND_MUSIC:
             # Pygame mixer
             mixer.init()
             self.channel1 = mixer.Channel(0)
@@ -56,19 +57,19 @@ class SoundSystem():
             self.playingBubbleSound = sound.play()
 
     def playMaintheme_slow(self):
-        if USE_PYGAME_MIXER:
+        if USE_BACKGROUND_MUSIC:
             if not self.maintheme_slowIsPlaying:
                 self.channel3.fadeout(0)  # incase game over theme was still playing
                 self.channel1.play(self.maintheme_slow)
                 self.maintheme_slowIsPlaying = True
 
     def speedupMaintheme(self):
-        if USE_PYGAME_MIXER:
+        if USE_BACKGROUND_MUSIC:
             self.channel2.play(self.maintheme_fast)
             self.channel1.fadeout(1400)
 
     def fadeIntoGameOverMusicTheme(self):
-        if USE_PYGAME_MIXER:
+        if USE_BACKGROUND_MUSIC:
             if not self.gameoverSoundIsPlaying:
                 self.channel1.fadeout(1400)  # incase slow main theme is still playing
                 self.channel2.fadeout(1400)
@@ -80,7 +81,7 @@ class SoundSystem():
                     self.gameoverThemeIsPlaying = True
 
     def stopGameOverMusicTheme(self):
-        if USE_PYGAME_MIXER:
+        if USE_BACKGROUND_MUSIC:
             self.channel4.fadeout(0)
             self.gameoverThemeIsPlaying = False
             self.gameoverSoundIsPlaying = False
