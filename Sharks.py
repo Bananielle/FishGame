@@ -20,6 +20,7 @@ class Shark(pygame.sprite.Sprite):
         super(Shark, self).__init__()
         self.gameParams = gameParams
         self.surf = pygame.image.load("Resources/shark.png").convert()
+        #self.surf = pygame.transform.scale(self.surf, self.surf.get_width() * 3, self.surf.get_height() * 3)
         self.surf.set_colorkey((0, 0, 0), RLEACCEL)
         # The starting position is randomly generated, as is the speed
         self.rect = self.surf.get_rect(

@@ -5,7 +5,7 @@ from pygame import mixer  # Only use this one for the main theme
 # Use a different module for sounds, because the pygame soundsystem didn't work together with  python 2.7.5.
 # (which was needed for exypriment...)
 
-USE_BACKGROUND_MUSIC = True # toggles the background music on/off (note, the background music makes use of the pygame mixer)
+USE_BACKGROUND_MUSIC = False # toggles the background music on/off (note, the background music makes use of the pygame mixer)
 
 # Set up the sounds
 class SoundSystem():

@@ -12,14 +12,14 @@ class GameParameters():
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
 
         # Adjustable parameters
-        self.gameTimeCounter_s = 20 # How long you want to one game run to last (in seconds)
+        self.gameTimeCounter_s = 70 # How long you want to one game run to last (in seconds)
         self.useBCIinput = True # If true, then player will be controlled by BCI input next to keyboard presses
         self.FPS = 60 # Frame rate. # Defines how often the the while loop is run through. E.g., an FPS of 60 will go through the while loop 60 times per second).
         # Create custom events for adding a new sprites (sharks and jellyfish)
         self.ADDSHARK = pygame.USEREVENT + 1
         pygame.time.set_timer(self.ADDSHARK, 700) # Define how quickly new sharks are added (e.g., every 1000ms)
         self.ADDJELLYFISH = pygame.USEREVENT + 2
-        pygame.time.set_timer(self.ADDJELLYFISH, 6000) # Define how quickly new jellyfish are added (e.g., every 4000ms)
+        #pygame.time.set_timer(self.ADDJELLYFISH, 6000) # Define how quickly new jellyfish are added (e.g., every 4000ms)
 
 
 

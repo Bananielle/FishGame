@@ -270,6 +270,13 @@ if __name__ == '__main__':
 
             gamestate = didPlayerPressQuit(gamestate, event)
 
+        numberOfStepsForFishToTake = BCI.calculateNrOfStepsToTake()
+        if numberOfStepsForFishToTake < 0:
+           gameParams.player.moveXStepsDown(numberOfStepsForFishToTake)
+
+        if numberOfStepsForFishToTake >= 0:
+            gameParams.player.moveXStepsUp(numberOfStepsForFishToTake)
+
         # Get user input
         keyboard_input = pygame.key.get_pressed()  # Get the set of keyboard keys pressed from user
         gameParams.player.update(keyboard_input, BCI_input, gameParams.useBCIinput)
@@ -417,7 +424,7 @@ if __name__ == '__main__':
 
     soundSystem = SoundSystem()
 
-    BCI = BCI()
+    BCI = BCI(SCREEN_HEIGHT)
 
     # Set up gamestates to cycle through in main loop
     GameState = GameStates()

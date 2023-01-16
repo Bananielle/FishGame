@@ -8,16 +8,18 @@ from pygame.locals import (
 )
 
 class BCI():
-    def __init__(self):
+    def __init__(self,SCREEN_HEIGHT):
         self.currentInput = 0
         self.previousInput = 0
         self.fakeInput = 0
         self.TSIconnectionFound = True
         self.timeBetweenSamples_ms = 100000
+        self.SCREEN_HEIGHT = SCREEN_HEIGHT
+        self.inputMultiplier = 0;
 
         # Look for a connection to turbo-satori
         try:
-            self.tsi = tsi.TurbosatoriNetworkInterface("127.0.0.1", 55555)
+            self.tsi = tsi.TurbosatoriNetworkInterface("127.0.0.1", 55556)
         except:
             # None found? Let the user know
             self.TSIconnectionFound = False
@@ -36,7 +38,11 @@ class BCI():
             Selected = self.tsi.get_selected_channels()[0]
             oxy = self.tsi.get_data_oxy(Selected[0], currentTimePoint - 1)[0]
             input = oxy
-            print("Current time point: " + str(currentTimePoint), ", selected channels: " + str(Selected) + " , oxy: " + str(oxy))
+
+            input = round(oxy,4)
+            print("Current time point: " + str(currentTimePoint), ", selected channels: " + str(Selected) + " , oxy: " + str(input))
+
+
 
         else:
             input = 0
@@ -53,14 +59,41 @@ class BCI():
 
     def translateToKeyboardPress(self, currentInput, previousInput):
         keyboardPress = 0
-        if currentInput > previousInput:
-            keyboardPress = K_UP
+        if currentInput > 0:
+            if currentInput > previousInput:
+                keyboardPress = K_UP
         if currentInput < previousInput:
             keyboardPress = K_DOWN
         if currentInput == previousInput:
             keyboardPress = False
 
         return keyboardPress
+
+    def getMaxInput(self, ):
+        maxInput = 0.2
+        # if 0.2 is the max that oxy will give and screen size is 1000, and a step is 5, then I have 200 steps for a screen.
+        # So 1000/0.2 = 5000, meaning I have to multiply everything by 5000 to get to max screen size.
+
+        return maxInput
+
+    def calculateInputMultiplier(self):
+        max_BCI_input = self.getMaxInput()
+
+        inputMultiplier = self.SCREEN_HEIGHT / max_BCI_input
+
+        return inputMultiplier
+
+
+    def calculateNrOfStepsToTake(self):
+        # Translate brain input to screen size
+
+        inputMultiplier = self.calculateInputMultiplier()
+
+        translated_BCI_input_current = self.currentInput * inputMultiplier
+        translated_BCI_input_previous = self.previousInput * inputMultiplier
+        numberOfStepsForFishToTake = translated_BCI_input_current - translated_BCI_input_previous
+
+        return numberOfStepsForFishToTake
 
     # with current data its 7.8125 samples per second. So a sample every 128ms.
     def establishTimeInBetweenSamples(self):

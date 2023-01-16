@@ -32,6 +32,11 @@ class MainPlayer(pygame.sprite.Sprite):
         self.playerSpeed = 10
 
 
+    def updateBasedOnBrainActivity(self,brainKeyPress):
+        # Make sure player speed is framrate independent
+        self.playerSpeed = 15 * self.gameParams.velocity * self.gameParams.deltaTime
+
+
     # Move the sprite based on keypresses
     def update(self, pressed_keys,brainKeyPress, useBCIinput):
 
@@ -44,6 +49,7 @@ class MainPlayer(pygame.sprite.Sprite):
                 self.moveUp()
             if brainKeyPress == K_DOWN:
                 self.moveDown()
+
 
         # Actual keyboard presses
         if pressed_keys[K_UP]:
@@ -79,3 +85,9 @@ class MainPlayer(pygame.sprite.Sprite):
 
     def moveRight(self):
         self.rect.move_ip(self.playerSpeed, 0)
+
+    def moveXStepsUp(self, nrOfSteps):
+        self.rect.move_ip(0, self.playerSpeed *nrOfSteps *-1)
+
+    def moveXStepsDown(self,nrOfSteps):
+        self.rect.move_ip(0, self.playerSpeed * nrOfSteps)
